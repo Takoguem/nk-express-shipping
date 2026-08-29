@@ -39,6 +39,27 @@ test("le lot frontend conserve le bilingue et WhatsApp", async () => {
   assert.match(javascript, /wa\.me/);
   assert.match(javascript, /Your parcels between Cameroon/);
   assert.match(javascript, /Vos colis entre le Cameroun/);
+  assert.match(javascript, /Nos expéditions en images/);
+  assert.match(javascript, /Shipping in action/);
+  assert.match(javascript, /12505 Quiverbrook Ct, Bowie, MD 20720/);
+  assert.match(javascript, /\+1 240 715 8407/);
+  assert.match(javascript, /\+1 240 715 8406/);
+  assert.match(javascript, /\+1 646 409 1168/);
+  assert.match(javascript, /\+1 450 369 2148/);
+  assert.match(javascript, /\+1 450 369 2149/);
+  assert.match(javascript, /\+237 675 069 501/);
+  assert.match(javascript, /\+237 678 50 82 28/);
+  assert.match(javascript, /\+237 679 40 70 66/);
+  assert.match(javascript, /google\.com\/maps\/dir/);
+});
+
+test("les six photos de la galerie sont présentes dans le build", async () => {
+  const assetNames = await readdir(new URL("assets/", outputRoot));
+  const galleryImages = assetNames.filter((name) =>
+    /^shipping-(?:main|gallery-0[1-5])-[^.]+\.jpeg$/.test(name),
+  );
+
+  assert.equal(galleryImages.length, 6);
 });
 
 test("le projet ne dépend plus de Next, Vinext ou d'un Worker", async () => {
@@ -57,4 +78,25 @@ test("le projet ne dépend plus de Next, Vinext ou d'un Worker", async () => {
 
   await assert.rejects(access(new URL("app/page.tsx", projectRoot)));
   await assert.rejects(access(new URL("worker/index.ts", projectRoot)));
+});
+
+test("les sections suivent l'ordre éditorial demandé sans dupliquer les contacts", async () => {
+  const sections = await readFile(new URL("src/sections/SiteSections.tsx", projectRoot), "utf8");
+  const siteSections = sections.slice(sections.indexOf("export function SiteSections"));
+  const expectedOrder = [
+    "<Departures",
+    "<Contacts",
+    "<MainGalleryImage",
+    "<Gallery",
+    "<Process",
+    "<DeliveryPickup",
+    "<Payments",
+    "<Practical",
+    "<Faq",
+  ];
+
+  const positions = expectedOrder.map((component) => siteSections.indexOf(component));
+  assert.ok(positions.every((position) => position >= 0));
+  assert.deepEqual(positions, [...positions].sort((left, right) => left - right));
+  assert.equal((siteSections.match(/<Contacts\s/g) ?? []).length, 1);
 });

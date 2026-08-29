@@ -15,6 +15,7 @@ interface TranslationDictionary {
   nav: {
     home: string;
     departures: string;
+    gallery: string;
     routes: string;
     process: string;
     services: string;
@@ -86,6 +87,15 @@ interface TranslationDictionary {
     emptyTitle: string;
     emptyText: string;
     emptyButton: string;
+  };
+  gallery: {
+    eyebrow: string;
+    title: string;
+    intro: string;
+    secondaryEyebrow: string;
+    secondaryTitle: string;
+    secondaryIntro: string;
+    disclaimer: string;
   };
   routes: {
     eyebrow: string;
@@ -169,6 +179,7 @@ interface TranslationDictionary {
     callButton: string;
     whatsappButton: string;
     primaryWhatsapp: string;
+    directionsButton: string;
   };
   faq: {
     eyebrow: string;
@@ -228,6 +239,7 @@ export const translations = {
     nav: {
       home: "Accueil",
       departures: "Départs",
+      gallery: "Photos",
       routes: "Trajets",
       process: "Comment ça marche",
       services: "Services",
@@ -301,6 +313,18 @@ export const translations = {
       emptyText:
         "Les prochaines dates d’expédition seront annoncées prochainement. Contactez-nous sur WhatsApp pour connaître les dernières disponibilités.",
       emptyButton: "Voir les disponibilités sur WhatsApp",
+    },
+    gallery: {
+      eyebrow: "Notre activité",
+      title: "Nos expéditions en images",
+      intro:
+        "Découvrez un aperçu de colis, bagages et effets personnels préparés avec attention avant leur acheminement.",
+      secondaryEyebrow: "Sur le terrain",
+      secondaryTitle: "D’autres préparations en images",
+      secondaryIntro:
+        "Une galerie de colis, bagages et effets personnels regroupés avant leur prise en charge.",
+      disclaimer:
+        "Ces images illustrent notre activité. Contactez-nous pour confirmer qu’un article peut être transporté.",
     },
     routes: {
       eyebrow: "Nos liaisons",
@@ -399,6 +423,7 @@ export const translations = {
       callButton: "Appeler",
       whatsappButton: "Écrire sur WhatsApp",
       primaryWhatsapp: "WhatsApp principal",
+      directionsButton: "Itinéraire",
     },
     faq: {
       eyebrow: "Questions fréquentes",
@@ -457,6 +482,7 @@ export const translations = {
     nav: {
       home: "Home",
       departures: "Departures",
+      gallery: "Gallery",
       routes: "Routes",
       process: "How it works",
       services: "Services",
@@ -530,6 +556,18 @@ export const translations = {
       emptyText:
         "Upcoming shipping dates will be announced soon. Contact us on WhatsApp for the latest availability.",
       emptyButton: "Check availability on WhatsApp",
+    },
+    gallery: {
+      eyebrow: "Our work",
+      title: "Shipping in action",
+      intro:
+        "See a selection of parcels, luggage, and personal belongings carefully prepared before transport.",
+      secondaryEyebrow: "Behind the scenes",
+      secondaryTitle: "More shipment preparations",
+      secondaryIntro:
+        "A gallery of parcels, luggage, and personal belongings gathered before handling.",
+      disclaimer:
+        "These images illustrate our work. Contact us to confirm whether an item can be transported.",
     },
     routes: {
       eyebrow: "Our connections",
@@ -628,6 +666,7 @@ export const translations = {
       callButton: "Call",
       whatsappButton: "Message on WhatsApp",
       primaryWhatsapp: "Main WhatsApp number",
+      directionsButton: "Directions",
     },
     faq: {
       eyebrow: "Frequently asked questions",

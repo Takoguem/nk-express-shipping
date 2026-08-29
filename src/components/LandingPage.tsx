@@ -39,10 +39,10 @@ export function LandingPage() {
 
   const navigation = [
     { href: "#departures", label: copy.nav.departures },
-    { href: "#routes", label: copy.nav.routes },
+    { href: "#contacts", label: copy.nav.contacts },
+    { href: "#gallery", label: copy.nav.gallery },
     { href: "#process", label: copy.nav.process },
     { href: "#practical", label: copy.nav.practical },
-    { href: "#contacts", label: copy.nav.contacts },
     { href: "#faq", label: copy.nav.faq },
   ];
 

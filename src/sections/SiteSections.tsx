@@ -11,6 +11,7 @@ import {
   Info,
   MapPin,
   MessageCircle,
+  Navigation,
   PackageCheck,
   Phone,
   Plane,
@@ -29,7 +30,6 @@ import {
   createWhatsAppLink,
   formatIsoDate,
   isIsoDateTodayOrFuture,
-  normalizePhoneNumber,
   sortByIsoDate,
 } from "../utils";
 
@@ -128,14 +128,12 @@ function QuickActions({ language }: SiteSectionsProps) {
   ];
 
   return (
-    <section className="section section--quick" aria-labelledby="quick-title">
-      <div className="container">
-        <SectionHeading id="quick-title" eyebrow={copy.quickActions.eyebrow} title={copy.quickActions.title} />
-        <div className="quick-grid">
-          {cards.map((card) => <ActionCard key={card.title} {...card} label={card.button} />)}
-        </div>
+    <div className="departures-actions" aria-labelledby="quick-title">
+      <SectionHeading id="quick-title" eyebrow={copy.quickActions.eyebrow} title={copy.quickActions.title} />
+      <div className="quick-grid">
+        {cards.map((card) => <ActionCard key={card.title} {...card} label={card.button} />)}
       </div>
-    </section>
+    </div>
   );
 }
 
@@ -224,6 +222,77 @@ function Departures({ language }: SiteSectionsProps) {
             </a>
           </div>
         )}
+        <QuickActions language={language} />
+      </div>
+    </section>
+  );
+}
+
+function MainGalleryImage({ language }: SiteSectionsProps) {
+  const copy = translations[language];
+  const { gallery } = siteConfig;
+  const mainImage = gallery.mainImage;
+
+  if (!gallery.enabled || !mainImage.enabled) return null;
+
+  return (
+    <section className="section gallery-main-section" aria-labelledby="gallery-main-title">
+      <div className="container">
+        <SectionHeading
+          id="gallery-main-title"
+          eyebrow={copy.gallery.eyebrow}
+          title={copy.gallery.title}
+          intro={copy.gallery.intro}
+        />
+
+        <figure className="gallery-main">
+          <img
+            src={mainImage.src}
+            alt={language === "fr" ? mainImage.altFr : mainImage.altEn}
+            width={mainImage.width}
+            height={mainImage.height}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+          />
+        </figure>
+      </div>
+    </section>
+  );
+}
+
+function Gallery({ language }: SiteSectionsProps) {
+  const copy = translations[language];
+  const { gallery } = siteConfig;
+  const images = gallery.images.filter((image) => image.enabled);
+
+  if (!gallery.enabled || !images.length) return null;
+
+  return (
+    <section className="section gallery-section" id="gallery" aria-labelledby="gallery-title">
+      <div className="container">
+        <SectionHeading
+          id="gallery-title"
+          eyebrow={copy.gallery.secondaryEyebrow}
+          title={copy.gallery.secondaryTitle}
+          intro={copy.gallery.secondaryIntro}
+        />
+        <div className="gallery-grid">
+          {images.map((image) => (
+            <figure className="gallery-card" key={image.id}>
+              <img
+                src={image.src}
+                alt={language === "fr" ? image.altFr : image.altEn}
+                width={image.width}
+                height={image.height}
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          ))}
+        </div>
+
+        <p className="gallery-disclaimer"><Info aria-hidden="true" size={17} />{copy.gallery.disclaimer}</p>
       </div>
     </section>
   );
@@ -239,23 +308,21 @@ function Routes({ language }: SiteSectionsProps) {
   if (!routes.length) return null;
 
   return (
-    <section className="section" id="routes" aria-labelledby="routes-title">
-      <div className="container">
-        <SectionHeading id="routes-title" eyebrow={copy.routes.eyebrow} title={copy.routes.title} intro={copy.routes.intro} />
-        <div className="routes-grid">
-          {routes.map(({ route, origin, destination, originFlag, destinationFlag }) => (
-            <article className="route-card" key={route.id} aria-label={copy.routes.routeLabel(origin, destination)}>
-              <span className="route-card__label"><span className="route-dot" />{copy.routes.availableRoute}</span>
-              <div className="route-card__journey">
-                <span><b aria-hidden="true">{originFlag}</b><strong>{origin}</strong></span>
-                <span className="route-card__line"><Plane aria-hidden="true" size={17} /></span>
-                <span><b aria-hidden="true">{destinationFlag}</b><strong>{destination}</strong></span>
-              </div>
-            </article>
-          ))}
-        </div>
+    <div className="process-routes" id="routes" aria-labelledby="routes-title">
+      <SectionHeading id="routes-title" eyebrow={copy.routes.eyebrow} title={copy.routes.title} intro={copy.routes.intro} />
+      <div className="routes-grid">
+        {routes.map(({ route, origin, destination, originFlag, destinationFlag }) => (
+          <article className="route-card" key={route.id} aria-label={copy.routes.routeLabel(origin, destination)}>
+            <span className="route-card__label"><span className="route-dot" />{copy.routes.availableRoute}</span>
+            <div className="route-card__journey">
+              <span><b aria-hidden="true">{originFlag}</b><strong>{origin}</strong></span>
+              <span className="route-card__line"><Plane aria-hidden="true" size={17} /></span>
+              <span><b aria-hidden="true">{destinationFlag}</b><strong>{destination}</strong></span>
+            </div>
+          </article>
+        ))}
       </div>
-    </section>
+    </div>
   );
 }
 
@@ -280,6 +347,7 @@ function Process({ language }: SiteSectionsProps) {
             );
           })}
         </ol>
+        <Routes language={language} />
       </div>
     </section>
   );
@@ -292,8 +360,8 @@ function QuoteAndServices({ language }: SiteSectionsProps) {
   const services = siteConfig.services.filter((service) => service.enabled);
 
   return (
-    <section className="section" id="services" aria-labelledby="services-title">
-      <div className="container decision-grid">
+    <div className="practical-support" id="services" aria-labelledby="services-title">
+      <div className="decision-grid">
         <article className="decision-card decision-card--gold">
           <span className="icon-badge"><CircleDollarSign aria-hidden="true" size={24} /></span>
           <p className="eyebrow">{copy.quote.eyebrow}</p>
@@ -326,7 +394,7 @@ function QuoteAndServices({ language }: SiteSectionsProps) {
         </article>
       </div>
 
-      <div className="container rules-card">
+      <div className="rules-card">
         <span className="rules-card__icon"><ShieldCheck aria-hidden="true" size={28} /></span>
         <div>
           <p className="eyebrow">{copy.parcelRules.eyebrow}</p>
@@ -335,43 +403,21 @@ function QuoteAndServices({ language }: SiteSectionsProps) {
           <small>{copy.parcelRules.disclaimer}</small>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 
-function Practical({ language }: SiteSectionsProps) {
+function DeliveryPickup({ language }: SiteSectionsProps) {
   const copy = translations[language];
-  const practicalItems = [
-    ...siteConfig.practicalInformation.filter((item) => item.enabled).map((item) => ({
-      id: item.id,
-      label: language === "fr" ? item.labelFr : item.labelEn,
-      value: language === "fr" ? item.valueFr : item.valueEn,
-      icon: Info,
-    })),
-    ...(siteConfig.delivery.homeDelivery
-      ? [{ id: "home-delivery", label: copy.practical.deliveryLabel, value: copy.practical.deliveryValue, icon: Home }]
-      : []),
-    ...(siteConfig.delivery.pickup
-      ? [{ id: "pickup", label: copy.practical.pickupLabel, value: copy.practical.pickupValue, icon: Store }]
-      : []),
-    { id: "authorized", label: copy.practical.authorizedParcelsLabel, value: copy.practical.authorizedParcelsValue, icon: ShieldCheck },
-  ].filter((item) => item.label.trim() && item.value.trim());
-
-  const configuredPayments = (Object.entries(siteConfig.paymentMethods) as Array<
-    [keyof typeof siteConfig.paymentMethods, string[]]
-  >).filter(([, methods]) => methods.some((method) => method.trim()));
 
   return (
-    <section className="section section--warm" id="practical" aria-labelledby="practical-title">
+    <section className="section" id="delivery" aria-labelledby="delivery-title">
       <div className="container">
-        <SectionHeading id="practical-title" eyebrow={copy.practical.eyebrow} title={copy.practical.title} intro={copy.practical.intro} />
-        <div className="practical-grid">
-          {practicalItems.map((item) => {
-            const Icon = item.icon;
-            return <article className="practical-card" key={item.id}><Icon aria-hidden="true" size={21} /><div><h3>{item.label}</h3><p>{item.value}</p></div></article>;
-          })}
-        </div>
-
+        <SectionHeading
+          id="delivery-title"
+          eyebrow={copy.deliveryPickup.eyebrow}
+          title={copy.deliveryPickup.title}
+        />
         <div className="logistics-grid">
           <article className="logistics-card">
             <div className="logistics-card__header"><Truck aria-hidden="true" size={22} /><h3>{copy.deliveryPickup.title}</h3></div>
@@ -390,12 +436,23 @@ function Practical({ language }: SiteSectionsProps) {
             </a>
           </article>
         </div>
+      </div>
+    </section>
+  );
+}
 
+function Payments({ language }: SiteSectionsProps) {
+  const copy = translations[language];
+  const configuredPayments = (Object.entries(siteConfig.paymentMethods) as Array<
+    [keyof typeof siteConfig.paymentMethods, string[]]
+  >).filter(([, methods]) => methods.some((method) => method.trim()));
+
+  return (
+    <section className="section section--warm payments-section" id="payments" aria-labelledby="payments-title">
+      <div className="container">
+        <SectionHeading id="payments-title" eyebrow={copy.payments.eyebrow} title={copy.payments.title} intro={copy.payments.intro} />
         <article className="payments-card">
-          <div className="payments-card__intro">
-            <span className="icon-badge"><WalletCards aria-hidden="true" size={22} /></span>
-            <div><p className="eyebrow">{copy.payments.eyebrow}</p><h3>{copy.payments.title}</h3><p>{copy.payments.intro}</p></div>
-          </div>
+          <span className="payments-card__icon"><WalletCards aria-hidden="true" size={24} /></span>
           {configuredPayments.length ? (
             <div className="payment-groups">
               {configuredPayments.map(([countryId, methods]) => {
@@ -411,10 +468,37 @@ function Practical({ language }: SiteSectionsProps) {
   );
 }
 
+function Practical({ language }: SiteSectionsProps) {
+  const copy = translations[language];
+  const practicalItems = [
+    ...siteConfig.practicalInformation.filter((item) => item.enabled).map((item) => ({
+      id: item.id,
+      label: language === "fr" ? item.labelFr : item.labelEn,
+      value: language === "fr" ? item.valueFr : item.valueEn,
+      icon: Info,
+    })),
+    { id: "authorized", label: copy.practical.authorizedParcelsLabel, value: copy.practical.authorizedParcelsValue, icon: ShieldCheck },
+  ].filter((item) => item.label.trim() && item.value.trim());
+
+  return (
+    <section className="section" id="practical" aria-labelledby="practical-title">
+      <div className="container">
+        <SectionHeading id="practical-title" eyebrow={copy.practical.eyebrow} title={copy.practical.title} intro={copy.practical.intro} />
+        <div className="practical-grid">
+          {practicalItems.map((item) => {
+            const Icon = item.icon;
+            return <article className="practical-card" key={item.id}><Icon aria-hidden="true" size={21} /><div><h3>{item.label}</h3><p>{item.value}</p></div></article>;
+          })}
+        </div>
+        <QuoteAndServices language={language} />
+      </div>
+    </section>
+  );
+}
+
 function Contacts({ language }: SiteSectionsProps) {
   const copy = translations[language];
   const contacts = siteConfig.contacts.filter((contact) => contact.enabled);
-  const primaryPhone = normalizePhoneNumber(siteConfig.whatsapp.primary);
 
   return (
     <section className="section" id="contacts" aria-labelledby="contacts-title">
@@ -425,14 +509,25 @@ function Contacts({ language }: SiteSectionsProps) {
             const country = siteConfig.countries.find((item) => item.id === contact.countryId);
             if (!country) return null;
             const countryLabel = language === "fr" ? country.nameFr : country.nameEn;
-            const title = contact.city?.trim() || countryLabel;
-            const subtitle = contact.city?.trim() ? countryLabel : null;
+            const isBowie = contact.id === "usa-bowie";
+            const title = isBowie
+              ? `${country.shortName} — ${contact.zones?.[0] || contact.city || "Bowie"}`
+              : contact.city?.trim() || countryLabel;
+            const subtitle = !isBowie && contact.city?.trim() ? countryLabel : null;
             const address = contact.address?.trim();
+            const callLink = createTelLink(contact.phones[0] ?? "");
+            const whatsappLink = isBowie
+              ? createWhatsAppLink(siteConfig.whatsapp.primary, copy.whatsappMessages.contact)
+              : null;
+            const purpose = (language === "fr" ? contact.purposeFr : contact.purposeEn)?.trim();
+            const purposeDescription = (
+              language === "fr" ? contact.purposeDescriptionFr : contact.purposeDescriptionEn
+            )?.trim();
 
             return (
-              <article className="contact-card" key={contact.id}>
+              <article className={`contact-card${address ? " contact-card--location" : ""}`} key={contact.id}>
                 <div className="contact-card__title"><span aria-hidden="true">{country.flag}</span><div><h3>{title}</h3>{subtitle ? <small>{subtitle}</small> : null}</div></div>
-                {contact.zones?.filter((zone) => zone.trim()).length ? (
+                {!isBowie && contact.zones?.filter((zone) => zone.trim()).length ? (
                   <div className="contact-block"><span className="contact-block__label"><MapPin aria-hidden="true" size={16} />{copy.contacts.zonesLabel}</span><div className="zone-list">{contact.zones.filter((zone) => zone.trim()).map((zone) => <span key={zone}>{zone}</span>)}</div></div>
                 ) : null}
                 <div className="contact-block">
@@ -441,17 +536,38 @@ function Contacts({ language }: SiteSectionsProps) {
                     {contact.phones.map((phone) => {
                       const telLink = createTelLink(phone);
                       if (!telLink) return null;
-                      const isPrimary = normalizePhoneNumber(phone) === primaryPhone;
                       return (
                         <div className="phone-row" key={phone}>
                           <a href={telLink} aria-label={copy.accessibility.callNumber(phone)}>{phone}</a>
-                          {isPrimary ? <a className="phone-whatsapp" href={createWhatsAppLink(phone, copy.whatsappMessages.contact) ?? undefined} target="_blank" rel="noreferrer" aria-label={copy.accessibility.whatsappNumber(phone)}><MessageCircle aria-hidden="true" size={16} />WhatsApp</a> : null}
                         </div>
                       );
                     })}
                   </div>
                 </div>
                 <div className="dropoff-note"><MapPin aria-hidden="true" size={18} /><span><strong>{copy.contacts.addressLabel}</strong><small>{address || copy.contacts.dropOffFallback}</small></span></div>
+                {purpose ? (
+                  <div className="contact-purpose">
+                    <strong>{purpose}</strong>
+                    {purposeDescription ? <p>{purposeDescription}</p> : null}
+                  </div>
+                ) : null}
+                <div className="contact-actions">
+                  {callLink ? (
+                    <a className="contact-action contact-action--call" href={callLink} aria-label={copy.accessibility.callNumber(contact.phones[0])}>
+                      <Phone aria-hidden="true" size={17} />{copy.contacts.callButton}
+                    </a>
+                  ) : null}
+                  {address && contact.directionsUrl ? (
+                    <a className="contact-action" href={contact.directionsUrl} target="_blank" rel="noreferrer">
+                      <Navigation aria-hidden="true" size={17} />{copy.contacts.directionsButton}
+                    </a>
+                  ) : null}
+                  {whatsappLink ? (
+                    <a className="contact-action contact-action--whatsapp" href={whatsappLink} target="_blank" rel="noreferrer" aria-label={copy.accessibility.whatsappNumber(siteConfig.whatsapp.primary)}>
+                      <MessageCircle aria-hidden="true" size={17} />{copy.contacts.whatsappButton}
+                    </a>
+                  ) : null}
+                </div>
               </article>
             );
           })}
@@ -486,13 +602,14 @@ function Faq({ language }: SiteSectionsProps) {
 export function SiteSections({ language }: SiteSectionsProps) {
   return (
     <>
-      <QuickActions language={language} />
       <Departures language={language} />
-      <Routes language={language} />
-      <Process language={language} />
-      <QuoteAndServices language={language} />
-      <Practical language={language} />
       <Contacts language={language} />
+      <MainGalleryImage language={language} />
+      <Gallery language={language} />
+      <Process language={language} />
+      <DeliveryPickup language={language} />
+      <Payments language={language} />
+      <Practical language={language} />
       <Faq language={language} />
     </>
   );

@@ -22,6 +22,12 @@ Vous pouvez notamment modifier :
 ====================================================
 */
 
+import galleryImage01 from "../assets/gallery/shipping-gallery-01.jpeg";
+import galleryImage02 from "../assets/gallery/shipping-gallery-02.jpeg";
+import galleryImage03 from "../assets/gallery/shipping-gallery-03.jpeg";
+import galleryImage04 from "../assets/gallery/shipping-gallery-04.jpeg";
+import galleryImage05 from "../assets/gallery/shipping-gallery-05.jpeg";
+import galleryMainImage from "../assets/gallery/shipping-main.jpeg";
 import type { SiteConfig } from "../types/site";
 
 export const siteConfig: SiteConfig = {
@@ -72,15 +78,82 @@ export const siteConfig: SiteConfig = {
     enabled: true,
   },
 ],
+  gallery: {
+    enabled: true,
+    mainImage: {
+      id: "shipping-main",
+      src: galleryMainImage,
+      altFr: "Colis et bagages préparés avec soin pour une expédition internationale",
+      altEn: "Parcels and luggage carefully prepared for international shipping",
+      width: 605,
+      height: 1280,
+      enabled: true,
+    },
+    images: [
+      {
+        id: "shipping-gallery-01",
+        src: galleryImage01,
+        altFr: "Produits conditionnés et regroupés avant leur expédition",
+        altEn: "Packaged products grouped together before shipping",
+        width: 605,
+        height: 773,
+        enabled: true,
+      },
+      {
+        id: "shipping-gallery-02",
+        src: galleryImage02,
+        altFr: "Effets personnels préparés pour le transport international",
+        altEn: "Personal belongings prepared for international transport",
+        width: 576,
+        height: 1024,
+        enabled: true,
+      },
+      {
+        id: "shipping-gallery-03",
+        src: galleryImage03,
+        altFr: "Sacs et bagages rassemblés avant leur prise en charge",
+        altEn: "Bags and luggage gathered before shipment handling",
+        width: 576,
+        height: 1024,
+        enabled: true,
+      },
+      {
+        id: "shipping-gallery-04",
+        src: galleryImage04,
+        altFr: "Vêtements et effets personnels triés avant expédition",
+        altEn: "Clothing and personal belongings sorted before shipping",
+        width: 1001,
+        height: 1080,
+        enabled: true,
+      },
+      {
+        id: "shipping-gallery-05",
+        src: galleryImage05,
+        altFr: "Produits emballés et disposés pour préparer un envoi",
+        altEn: "Packaged goods laid out while preparing a shipment",
+        width: 486,
+        height: 1080,
+        enabled: true,
+      },
+    ],
+  },
   announcement: { enabled: false, textFr: "", textEn: "" },
   contacts: [
     {
-      id: "usa",
+      id: "usa-bowie",
       countryId: "usa",
-      city: null,
-      zones: ["Quiverbrook Ct", "Bowie, Maryland"],
-      phones: ["+1 646 409 1168", "+1 240 715 8407"],
-      address: null,
+      city: "Bowie",
+      zones: ["Bowie, Maryland"],
+      phones: ["+1 240 715 8406", "+1 646 409 1168"],
+      address: "12505 Quiverbrook Ct, Bowie, MD 20720",
+      purposeFr: "Dépôt & récupération des colis",
+      purposeEn: "Parcel drop-off & pickup",
+      purposeDescriptionFr:
+        "Vous pouvez déposer vos colis et récupérer vos colis disponibles à notre point de Bowie, Maryland.",
+      purposeDescriptionEn:
+        "You can drop off your parcels and collect available shipments at our Bowie, Maryland location.",
+      directionsUrl:
+        "https://www.google.com/maps/dir/?api=1&destination=12505%20Quiverbrook%20Ct%2C%20Bowie%2C%20MD%2020720",
       enabled: true,
     },
     {
@@ -92,18 +165,18 @@ export const siteConfig: SiteConfig = {
       enabled: true,
     },
     {
-      id: "douala",
+      id: "yaounde",
       countryId: "cameroon",
-      city: "Douala",
-      phones: ["+237 679 46 83 36", "+237 696 59 41 85"],
+      city: "Yaoundé",
+      phones: ["+237 675 069 501"],
       address: null,
       enabled: true,
     },
     {
-      id: "yaounde",
+      id: "douala",
       countryId: "cameroon",
-      city: "Yaoundé",
-      phones: ["+237 675 06 95 01"],
+      city: "Douala - Bonamoussadi",
+      phones: ["+237 678 50 82 28"],
       address: null,
       enabled: true,
     },

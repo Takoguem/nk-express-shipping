@@ -48,7 +48,28 @@ export interface ContactLocation {
   zones?: string[];
   phones: string[];
   address: string | null;
+  purposeFr?: string;
+  purposeEn?: string;
+  purposeDescriptionFr?: string;
+  purposeDescriptionEn?: string;
+  directionsUrl?: string;
   enabled: boolean;
+}
+
+export interface GalleryImage {
+  id: string;
+  src: string;
+  altFr: string;
+  altEn: string;
+  width: number;
+  height: number;
+  enabled: boolean;
+}
+
+export interface GalleryConfig {
+  enabled: boolean;
+  mainImage: GalleryImage;
+  images: GalleryImage[];
 }
 
 export interface ConfigurableService {
@@ -84,6 +105,7 @@ export interface SiteConfig {
   whatsapp: { primary: string };
   routes: ShippingRoute[];
   departures: Departure[];
+  gallery: GalleryConfig;
   announcement: { enabled: boolean; textFr: string; textEn: string };
   contacts: ContactLocation[];
   services: ConfigurableService[];
