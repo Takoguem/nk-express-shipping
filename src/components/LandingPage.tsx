@@ -33,14 +33,14 @@ export function LandingPage() {
     : "";
 
   const whatsappLink = useMemo(
-    () => createWhatsAppLink(siteConfig.whatsapp.primary, copy.whatsappMessages.contact),
-    [copy.whatsappMessages.contact],
+    () => createWhatsAppLink(siteConfig.whatsapp.primary, copy.whatsappMessages.contact, language),
+    [copy.whatsappMessages.contact, language],
   );
 
   const navigation = [
     { href: "#departures", label: copy.nav.departures },
     { href: "#contacts", label: copy.nav.contacts },
-    { href: "#gallery", label: copy.nav.gallery },
+    { href: "#pricing", label: copy.nav.pricing },
     { href: "#process", label: copy.nav.process },
     { href: "#practical", label: copy.nav.practical },
     { href: "#faq", label: copy.nav.faq },
@@ -68,7 +68,14 @@ export function LandingPage() {
       const element = document.querySelector<HTMLMetaElement>(selector);
       if (element) element.content = content;
     });
-  }, [copy.meta.description, copy.meta.title]);
+
+    const openGraphLocale = document.querySelector<HTMLMetaElement>('meta[property="og:locale"]');
+    const alternateLocale = document.querySelector<HTMLMetaElement>(
+      'meta[property="og:locale:alternate"]',
+    );
+    if (openGraphLocale) openGraphLocale.content = language === "fr" ? "fr_FR" : "en_US";
+    if (alternateLocale) alternateLocale.content = language === "fr" ? "en_US" : "fr_FR";
+  }, [copy.meta.description, copy.meta.title, language]);
 
   useEffect(() => {
     const faviconPath = siteConfig.seo.faviconPath.trim();
@@ -137,7 +144,7 @@ export function LandingPage() {
 
           <div className="header-actions">
             <div className="language-switch" role="group" aria-label={copy.accessibility.languageSelector}>
-              {(["fr", "en"] as const).map((option) => (
+              {(["en", "fr"] as const).map((option) => (
                 <button
                   type="button"
                   className={language === option ? "is-active" : undefined}

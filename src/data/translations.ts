@@ -21,6 +21,7 @@ interface TranslationDictionary {
     services: string;
     practical: string;
     contacts: string;
+    pricing: string;
     faq: string;
   };
   header: {
@@ -57,6 +58,7 @@ interface TranslationDictionary {
   quickActions: {
     eyebrow: string;
     title: string;
+    intro: string;
     quote: {
       title: string;
       text: string;
@@ -72,6 +74,22 @@ interface TranslationDictionary {
       text: string;
       button: string;
     };
+    fromLabel: string;
+    toLabel: string;
+    chooseContact: string;
+    noContacts: string;
+    optionalLabel: string;
+    itemLabel: string;
+    quoteItemPlaceholder: string;
+    weightLabel: string;
+    weightPlaceholder: string;
+    quantityLabel: string;
+    quantityPlaceholder: string;
+    referenceLabel: string;
+    referencePlaceholder: string;
+    referenceHint: string;
+    checkItemLabel: string;
+    checkItemPlaceholder: string;
   };
   departures: {
     eyebrow: string;
@@ -87,6 +105,10 @@ interface TranslationDictionary {
     emptyTitle: string;
     emptyText: string;
     emptyButton: string;
+    upcomingDates: string;
+    requestDetails: string;
+    chooseContact: string;
+    noContacts: string;
   };
   gallery: {
     eyebrow: string;
@@ -96,6 +118,19 @@ interface TranslationDictionary {
     secondaryTitle: string;
     secondaryIntro: string;
     disclaimer: string;
+  };
+  pricing: {
+    eyebrow: string;
+    title: string;
+    intro: string;
+    scopeLabel: string;
+    additionalFeesTitle: string;
+    restrictionTitle: string;
+    exchangeRateTitle: string;
+    contactTitle: string;
+    contactIntro: string;
+    whatsappButton: string;
+    confirmationNote: string;
   };
   routes: {
     eyebrow: string;
@@ -216,7 +251,8 @@ interface TranslationDictionary {
     quote: string;
     tracking: string;
     parcelCheck: string;
-    departure: (origin: string, destination: string) => string;
+    pricing: string;
+    contactLocation: (location: string) => string;
   };
 }
 
@@ -245,6 +281,7 @@ export const translations = {
       services: "Services",
       practical: "Infos pratiques",
       contacts: "Contacts",
+      pricing: "Tarifs",
       faq: "FAQ",
     },
     header: {
@@ -282,10 +319,11 @@ export const translations = {
     quickActions: {
       eyebrow: "Accès rapide",
       title: "Que souhaitez-vous faire ?",
+      intro: "Choisissez une action, votre trajet, puis le contact WhatsApp correspondant au pays de départ.",
       quote: {
-        title: "Demander un tarif",
-        text: "Obtenez une estimation adaptée à votre colis et à votre trajet.",
-        button: "Obtenir un tarif",
+          title: "Demander un devis",
+        text: "Consultez les tarifs publiés ou demandez une estimation pour un autre trajet.",
+          button: "Demander un devis",
       },
       tracking: {
         title: "Suivre un colis",
@@ -293,10 +331,26 @@ export const translations = {
         button: "Suivre mon colis",
       },
       parcel: {
-        title: "Vérifier un colis",
+          title: "Vérifier un article",
         text: "Confirmez qu’un article peut être transporté avant de l’expédier.",
-        button: "Vérifier mon colis",
+          button: "Vérifier un article",
       },
+      fromLabel: "Depuis",
+      toLabel: "Vers",
+      chooseContact: "Choisissez un contact",
+      noContacts: "Aucun contact WhatsApp n’est disponible pour ce pays de départ.",
+      optionalLabel: "Facultatif",
+      itemLabel: "Article",
+      quoteItemPlaceholder: "ex. vêtements, cosmétiques…",
+      weightLabel: "Poids approximatif",
+      weightPlaceholder: "ex. 8 kg",
+      quantityLabel: "Quantité",
+      quantityPlaceholder: "ex. 2",
+      referenceLabel: "Référence du colis",
+      referencePlaceholder: "Saisissez votre référence",
+      referenceHint: "Fortement recommandée pour faciliter la recherche de votre colis.",
+      checkItemLabel: "Quel article souhaitez-vous expédier ?",
+      checkItemPlaceholder: "ex. cosmétiques, vêtements, électronique…",
     },
     departures: {
       eyebrow: "Calendrier des expéditions",
@@ -313,6 +367,10 @@ export const translations = {
       emptyText:
         "Les prochaines dates d’expédition seront annoncées prochainement. Contactez-nous sur WhatsApp pour connaître les dernières disponibilités.",
       emptyButton: "Voir les disponibilités sur WhatsApp",
+      upcomingDates: "Dates à venir",
+      requestDetails: "Demander des détails",
+      chooseContact: "Choisissez un contact WhatsApp",
+      noContacts: "Aucun contact n’est disponible pour ce trajet.",
     },
     gallery: {
       eyebrow: "Notre activité",
@@ -325,6 +383,21 @@ export const translations = {
         "Une galerie de colis, bagages et effets personnels regroupés avant leur prise en charge.",
       disclaimer:
         "Ces images illustrent notre activité. Contactez-nous pour confirmer qu’un article peut être transporté.",
+    },
+    pricing: {
+      eyebrow: "Grille tarifaire",
+      title: "Tarifs d’expédition depuis le Cameroun",
+      intro:
+        "Tarifs publiés uniquement pour les expéditions du Cameroun vers les États-Unis et le Canada.",
+      scopeLabel: "Trajets concernés",
+      additionalFeesTitle: "Frais supplémentaires",
+      restrictionTitle: "Restriction importante",
+      exchangeRateTitle: "Paiements en USD",
+      contactTitle: "Vous expédiez depuis le Cameroun ? Contactez-nous sur WhatsApp",
+      contactIntro: "Choisissez le contact correspondant à votre ville de départ.",
+      whatsappButton: "Écrire sur WhatsApp",
+      confirmationNote:
+        "Les catégories et tarifs ci-dessus concernent uniquement ce service. Confirmez l’acceptation et le prix applicable à votre colis avant l’expédition.",
     },
     routes: {
       eyebrow: "Nos liaisons",
@@ -359,7 +432,7 @@ export const translations = {
     quote: {
       eyebrow: "Tarif personnalisé",
       title: "Besoin d’un tarif ?",
-      text: "Le tarif dépend notamment du type de colis, de son poids, de son volume, de son origine et de sa destination.",
+      text: "Consultez nos tarifs publiés pour les expéditions Cameroun → USA / Canada. Pour les autres trajets ou situations particulières, contactez-nous afin d’obtenir un tarif.",
       button: "Obtenir un tarif sur WhatsApp",
     },
     services: {
@@ -418,7 +491,7 @@ export const translations = {
       intro: "Choisissez le contact correspondant à votre pays ou à votre ville.",
       phonesLabel: "Numéros de téléphone",
       zonesLabel: "Zones desservies",
-      addressLabel: "Point de dépôt",
+      addressLabel: "Adresse",
       dropOffFallback: "Contactez-nous pour connaître le point de dépôt.",
       callButton: "Appeler",
       whatsappButton: "Écrire sur WhatsApp",
@@ -460,8 +533,10 @@ export const translations = {
       quote: "Bonjour, je souhaite obtenir un tarif pour l’envoi d’un colis.",
       tracking: "Bonjour, je souhaite connaître le statut de mon colis. Ma référence est :",
       parcelCheck: "Bonjour, je souhaite vérifier si mon colis peut être expédié.",
-      departure: (origin, destination) =>
-        `Bonjour, je souhaite avoir des informations sur le prochain départ ${origin} → ${destination}.`,
+      pricing:
+        "Bonjour, je souhaite obtenir des informations concernant l’expédition d’un colis du Cameroun vers les États-Unis ou le Canada.",
+      contactLocation: (location) =>
+        `Bonjour, je souhaite contacter votre équipe à ${location}.`,
     },
   },
   en: {
@@ -488,6 +563,7 @@ export const translations = {
       services: "Services",
       practical: "Practical information",
       contacts: "Contacts",
+      pricing: "Rates",
       faq: "FAQ",
     },
     header: {
@@ -525,9 +601,10 @@ export const translations = {
     quickActions: {
       eyebrow: "Quick access",
       title: "What would you like to do?",
+      intro: "Choose an action, your route, and then the WhatsApp contact for the country of origin.",
       quote: {
         title: "Request a quote",
-        text: "Get an estimate tailored to your parcel and route.",
+        text: "View published rates or request an estimate for another route.",
         button: "Get a quote",
       },
       tracking: {
@@ -540,6 +617,22 @@ export const translations = {
         text: "Confirm that an item can be transported before you ship it.",
         button: "Check my item",
       },
+      fromLabel: "From",
+      toLabel: "To",
+      chooseContact: "Choose a contact",
+      noContacts: "No WhatsApp contact is available for this country of origin.",
+      optionalLabel: "Optional",
+      itemLabel: "Item",
+      quoteItemPlaceholder: "e.g. clothes, cosmetics…",
+      weightLabel: "Approximate weight",
+      weightPlaceholder: "e.g. 8 kg",
+      quantityLabel: "Quantity",
+      quantityPlaceholder: "e.g. 2",
+      referenceLabel: "Shipment reference",
+      referencePlaceholder: "Enter your reference",
+      referenceHint: "Strongly recommended to help the team locate your shipment.",
+      checkItemLabel: "What would you like to ship?",
+      checkItemPlaceholder: "e.g. cosmetics, clothes, electronics…",
     },
     departures: {
       eyebrow: "Shipping schedule",
@@ -556,6 +649,10 @@ export const translations = {
       emptyText:
         "Upcoming shipping dates will be announced soon. Contact us on WhatsApp for the latest availability.",
       emptyButton: "Check availability on WhatsApp",
+      upcomingDates: "Upcoming dates",
+      requestDetails: "Request details",
+      chooseContact: "Choose a WhatsApp contact",
+      noContacts: "No contact is available for this route.",
     },
     gallery: {
       eyebrow: "Our work",
@@ -568,6 +665,21 @@ export const translations = {
         "A gallery of parcels, luggage, and personal belongings gathered before handling.",
       disclaimer:
         "These images illustrate our work. Contact us to confirm whether an item can be transported.",
+    },
+    pricing: {
+      eyebrow: "Published rates",
+      title: "Shipping Rates from Cameroon",
+      intro:
+        "Published rates apply only to shipments from Cameroon to the United States and Canada.",
+      scopeLabel: "Applicable routes",
+      additionalFeesTitle: "Additional fees",
+      restrictionTitle: "Important restriction",
+      exchangeRateTitle: "Payments in USD",
+      contactTitle: "Shipping from Cameroon? Contact us on WhatsApp",
+      contactIntro: "Choose the contact for your departure city.",
+      whatsappButton: "Message on WhatsApp",
+      confirmationNote:
+        "The categories and rates above apply only to this service. Confirm that your item is accepted and verify the applicable rate before shipping.",
     },
     routes: {
       eyebrow: "Our connections",
@@ -602,7 +714,7 @@ export const translations = {
     quote: {
       eyebrow: "Personalized quote",
       title: "Need a quote?",
-      text: "Pricing depends on factors such as the parcel type, weight, volume, origin, and destination.",
+      text: "View our published Cameroon → USA / Canada rates. For other routes or special cases, contact us for a quote.",
       button: "Get a quote on WhatsApp",
     },
     services: {
@@ -661,7 +773,7 @@ export const translations = {
       intro: "Choose the contact for your country or city.",
       phonesLabel: "Phone numbers",
       zonesLabel: "Areas served",
-      addressLabel: "Drop-off location",
+      addressLabel: "Address",
       dropOffFallback: "Contact us for the drop-off location.",
       callButton: "Call",
       whatsappButton: "Message on WhatsApp",
@@ -683,6 +795,9 @@ export const translations = {
       followUs: "Follow us",
       disclaimer: "Departure dates, availability, and shipping arrangements may change. Contact us to confirm the latest information.",
       copyright: (year) => `© ${year} NK Ultra Shipping Express × Express Air Shipping. All rights reserved.`,
+      developerCredit: "Designed & developed by Bruel Junior Takoguem",
+      developerContact: "Contact me",
+      
     },
     accessibility: {
       skipToContent: "Skip to main content",
@@ -703,8 +818,10 @@ export const translations = {
       quote: "Hello, I would like to request a quote for shipping a parcel.",
       tracking: "Hello, I would like to check the status of my shipment. My reference is:",
       parcelCheck: "Hello, I would like to check whether my parcel can be shipped.",
-      departure: (origin, destination) =>
-        `Hello, I would like information about the next ${origin} → ${destination} departure.`,
+      pricing:
+        "Hello, I would like information about shipping a parcel from Cameroon to the USA or Canada.",
+      contactLocation: (location) =>
+        `Hello, I would like to contact your team in ${location}.`,
     },
   },
 } as const satisfies Record<"fr" | "en", TranslationDictionary>;

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   CalendarDays,
@@ -25,13 +26,19 @@ import type { LucideIcon } from "lucide-react";
 import { siteConfig } from "../data/site-config";
 import { translations } from "../data/translations";
 import type { Language } from "../types/site";
+import { WhatsAppContactPicker } from "../components/WhatsAppContactPicker";
 import {
+  buildDepartureMessage,
+  buildQuickActionMessage,
   createTelLink,
   createWhatsAppLink,
   formatIsoDate,
+  getDepartureWhatsAppContacts,
+  getWhatsAppContacts,
   isIsoDateTodayOrFuture,
   sortByIsoDate,
 } from "../utils";
+import type { QuickActionFormData, QuickActionType } from "../utils";
 
 interface SiteSectionsProps {
   language: Language;
@@ -61,6 +68,12 @@ function countryName(countryId: string, language: Language) {
   return language === "fr" ? country.nameFr : country.nameEn;
 }
 
+function messageCountryName(countryId: string, language: Language) {
+  const country = siteConfig.countries.find((item) => item.id === countryId);
+  if (!country) return countryId;
+  return language === "fr" ? country.messageNameFr : country.messageNameEn;
+}
+
 function routeDetails(routeId: string, language: Language) {
   const route = siteConfig.routes.find((item) => item.id === routeId && item.enabled);
   if (!route) return null;
@@ -82,58 +95,193 @@ function routeDetails(routeId: string, language: Language) {
 }
 
 function ActionCard({
+  actionId,
   icon: Icon,
   title,
   text,
   label,
-  href,
+  active,
+  onClick,
 }: {
+  actionId: QuickActionType;
   icon: LucideIcon;
   title: string;
   text: string;
   label: string;
-  href: string;
+  active: boolean;
+  onClick: () => void;
 }) {
   return (
-    <a className="action-card" href={href} target="_blank" rel="noreferrer">
+    <button
+      className={`action-card${active ? " is-active" : ""}`}
+      id={`quick-actions-${actionId}`}
+      type="button"
+      aria-pressed={active}
+      onClick={onClick}
+    >
       <span className="icon-badge"><Icon aria-hidden="true" size={22} /></span>
       <span className="action-card__copy">
         <strong>{title}</strong>
         <small>{text}</small>
       </span>
       <span className="action-card__link">{label}<ArrowRight aria-hidden="true" size={16} /></span>
-    </a>
+    </button>
   );
 }
 
 function QuickActions({ language }: SiteSectionsProps) {
   const copy = translations[language];
-  const phone = siteConfig.whatsapp.primary;
+  const routes = siteConfig.routes.filter((route) => route.enabled);
+  const initialRoute = routes[0];
+  const [action, setAction] = useState<QuickActionType>("quote");
+  const [originId, setOriginId] = useState(initialRoute?.origin ?? "");
+  const [destinationId, setDestinationId] = useState(initialRoute?.destination ?? "");
+  const [formData, setFormData] = useState<QuickActionFormData>({
+    item: "",
+    weight: "",
+    quantity: "",
+    reference: "",
+  });
+
+  useEffect(() => {
+    const selectActionFromHash = () => {
+      const hashAction = window.location.hash.replace("#quick-actions-", "");
+      if (hashAction === "quote" || hashAction === "tracking" || hashAction === "item-check") {
+        setAction(hashAction);
+      }
+    };
+    selectActionFromHash();
+    window.addEventListener("hashchange", selectActionFromHash);
+    return () => window.removeEventListener("hashchange", selectActionFromHash);
+  }, []);
   const cards = [
     {
+      id: "quote" as const,
       icon: CircleDollarSign,
       ...copy.quickActions.quote,
-      href: createWhatsAppLink(phone, copy.whatsappMessages.quote) ?? "#contacts",
     },
     {
+      id: "tracking" as const,
       icon: SearchCheck,
       ...copy.quickActions.tracking,
-      href: createWhatsAppLink(phone, copy.whatsappMessages.tracking) ?? "#contacts",
     },
     {
+      id: "item-check" as const,
       icon: PackageCheck,
       ...copy.quickActions.parcel,
-      href: createWhatsAppLink(phone, copy.whatsappMessages.parcelCheck) ?? "#contacts",
     },
   ];
+  const originIds = [...new Set(routes.map((route) => route.origin))];
+  const destinationIds = routes
+    .filter((route) => route.origin === originId)
+    .map((route) => route.destination);
+  const activeRoute = routes.find(
+    (route) => route.origin === originId && route.destination === destinationId,
+  );
+  const contacts = activeRoute ? getDepartureWhatsAppContacts(activeRoute.origin) : [];
+
+  const updateField = (field: keyof QuickActionFormData, value: string) => {
+    setFormData((current) => ({ ...current, [field]: value }));
+  };
+
+  const handleOriginChange = (nextOriginId: string) => {
+    const nextDestination = routes.find((route) => route.origin === nextOriginId)?.destination ?? "";
+    setOriginId(nextOriginId);
+    setDestinationId(nextDestination);
+  };
+
+  if (!initialRoute) return null;
 
   return (
-    <div className="departures-actions" aria-labelledby="quick-title">
-      <SectionHeading id="quick-title" eyebrow={copy.quickActions.eyebrow} title={copy.quickActions.title} />
-      <div className="quick-grid">
-        {cards.map((card) => <ActionCard key={card.title} {...card} label={card.button} />)}
+    <section className="section section--navy quick-actions-section" id="quick-actions" aria-labelledby="quick-title">
+      <div className="container">
+        <SectionHeading
+          id="quick-title"
+          eyebrow={copy.quickActions.eyebrow}
+          title={copy.quickActions.title}
+          intro={copy.quickActions.intro}
+        />
+        <div className="quick-grid">
+          {cards.map((card) => (
+            <ActionCard
+              key={card.id}
+              actionId={card.id}
+              icon={card.icon}
+              title={card.title}
+              text={card.text}
+              label={card.button}
+              active={action === card.id}
+              onClick={() => setAction(card.id)}
+            />
+          ))}
+        </div>
+
+        <div className="quick-action-panel" aria-live="polite">
+          <div className="route-selectors">
+            <label>
+              <span>{copy.quickActions.fromLabel}</span>
+              <select value={originId} onChange={(event) => handleOriginChange(event.target.value)}>
+                {originIds.map((countryId) => {
+                  const country = siteConfig.countries.find((item) => item.id === countryId);
+                  if (!country) return null;
+                  return <option value={country.id} key={country.id}>{country.flag} {language === "fr" ? country.nameFr : country.nameEn}</option>;
+                })}
+              </select>
+            </label>
+            <label>
+              <span>{copy.quickActions.toLabel}</span>
+              <select value={destinationId} onChange={(event) => setDestinationId(event.target.value)}>
+                {destinationIds.map((countryId) => {
+                  const country = siteConfig.countries.find((item) => item.id === countryId);
+                  if (!country) return null;
+                  return <option value={country.id} key={country.id}>{country.flag} {language === "fr" ? country.nameFr : country.nameEn}</option>;
+                })}
+              </select>
+            </label>
+          </div>
+
+          {action === "quote" ? (
+            <div className="quick-form-grid">
+              <label><span>{copy.quickActions.itemLabel}<small>{copy.quickActions.optionalLabel}</small></span><input value={formData.item} onChange={(event) => updateField("item", event.target.value)} placeholder={copy.quickActions.quoteItemPlaceholder} /></label>
+              <label><span>{copy.quickActions.weightLabel}<small>{copy.quickActions.optionalLabel}</small></span><input value={formData.weight} onChange={(event) => updateField("weight", event.target.value)} placeholder={copy.quickActions.weightPlaceholder} /></label>
+              <label><span>{copy.quickActions.quantityLabel}<small>{copy.quickActions.optionalLabel}</small></span><input value={formData.quantity} onChange={(event) => updateField("quantity", event.target.value)} placeholder={copy.quickActions.quantityPlaceholder} /></label>
+            </div>
+          ) : null}
+
+          {action === "tracking" ? (
+            <label className="quick-form-field">
+              <span>{copy.quickActions.referenceLabel}</span>
+              <input value={formData.reference} onChange={(event) => updateField("reference", event.target.value)} placeholder={copy.quickActions.referencePlaceholder} />
+              <small>{copy.quickActions.referenceHint}</small>
+            </label>
+          ) : null}
+
+          {action === "item-check" ? (
+            <label className="quick-form-field">
+              <span>{copy.quickActions.checkItemLabel}</span>
+              <input value={formData.item} onChange={(event) => updateField("item", event.target.value)} placeholder={copy.quickActions.checkItemPlaceholder} />
+            </label>
+          ) : null}
+
+          {activeRoute ? (
+            <WhatsAppContactPicker
+              contacts={contacts}
+              heading={copy.quickActions.chooseContact}
+              emptyText={copy.quickActions.noContacts}
+              messageForLanguage={(contactLanguage) =>
+                buildQuickActionMessage(
+                  action,
+                  messageCountryName(activeRoute.origin, contactLanguage),
+                  messageCountryName(activeRoute.destination, contactLanguage),
+                  formData,
+                  contactLanguage,
+                )
+              }
+            />
+          ) : null}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -149,6 +297,14 @@ function Departures({ language }: SiteSectionsProps) {
     ),
     (departure) => departure.date,
   );
+  const nextDepartureId = departures[0]?.id;
+  const groups = siteConfig.departureRouteOrder
+    .map((routeId) => {
+      const route = routeDetails(routeId, language);
+      const routeDepartures = departures.filter((departure) => departure.routeId === routeId);
+      return route && routeDepartures.length ? { route, departures: routeDepartures } : null;
+    })
+    .filter((group): group is NonNullable<typeof group> => group !== null);
 
   return (
     <section className="section section--warm" id="departures" aria-labelledby="departures-title">
@@ -160,47 +316,62 @@ function Departures({ language }: SiteSectionsProps) {
           intro={copy.departures.intro}
         />
 
-        {departures.length ? (
+        {groups.length ? (
           <div className="departures-grid">
-            {departures.map((departure, index) => {
-              const route = routeDetails(departure.routeId, language);
-              const formattedDate = formatIsoDate(departure.date, locale);
-              if (!route || !formattedDate) return null;
-
-              const deadline = departure.deadline
-                ? formatIsoDate(departure.deadline, locale)
-                : null;
-              const note = (language === "fr" ? departure.noteFr : departure.noteEn)?.trim();
-              const status = (language === "fr" ? departure.statusFr : departure.statusEn)?.trim();
-              const message = copy.whatsappMessages.departure(route.origin, route.destination);
-              const link = createWhatsAppLink(siteConfig.whatsapp.primary, message) ?? "#contacts";
-
+            {groups.map(({ route, departures: routeDepartures }) => {
+              const containsNextDeparture = routeDepartures.some(
+                (departure) => departure.id === nextDepartureId,
+              );
+              const contacts = getDepartureWhatsAppContacts(route.route.origin);
               return (
-                <article className={`departure-card${index === 0 ? " departure-card--featured" : ""}`} key={departure.id}>
-                  <div className="departure-card__topline">
-                    <span className="status-badge">
-                      {index === 0 ? copy.departures.nextBadge : copy.departures.availableBadge}
-                    </span>
-                    {status ? <span className="departure-card__status">{status}</span> : null}
-                  </div>
+                <article className={`departure-card${containsNextDeparture ? " departure-card--featured" : ""}`} key={route.route.id}>
                   <div className="departure-route">
                     <span><span aria-hidden="true">{route.originFlag}</span>{route.origin}</span>
                     <ArrowRight aria-hidden="true" size={20} />
                     <span><span aria-hidden="true">{route.destinationFlag}</span>{route.destination}</span>
                   </div>
-                  <div className="departure-date">
-                    <CalendarDays aria-hidden="true" size={22} />
-                    <span><small>{copy.departures.dateLabel}</small><strong>{formattedDate}</strong></span>
-                  </div>
-                  {deadline ? (
-                    <p className="departure-meta"><strong>{copy.departures.deadlineLabel} :</strong> {deadline}</p>
-                  ) : null}
-                  {note ? (
-                    <p className="departure-meta"><strong>{copy.departures.noteLabel} :</strong> {note}</p>
-                  ) : null}
-                  <a className="button button--card" href={link} target="_blank" rel="noreferrer">
-                    <MessageCircle aria-hidden="true" size={18} />{copy.departures.whatsappButton}
-                  </a>
+
+                  <p className="departure-dates-label">{copy.departures.upcomingDates}</p>
+                  <ul className="departure-dates">
+                    {routeDepartures.map((departure) => {
+                      const formattedDate = formatIsoDate(departure.date, locale);
+                      if (!formattedDate) return null;
+                      const deadline = departure.deadline
+                        ? formatIsoDate(departure.deadline, locale)
+                        : null;
+                      const note = (language === "fr" ? departure.noteFr : departure.noteEn)?.trim();
+                      const status = (language === "fr" ? departure.statusFr : departure.statusEn)?.trim();
+                      const isNextDeparture = departure.id === nextDepartureId;
+
+                      return (
+                        <li className={isNextDeparture ? "is-next" : undefined} key={departure.id}>
+                          <span><CalendarDays aria-hidden="true" size={17} /><strong>{formattedDate}</strong></span>
+                          {isNextDeparture ? <small>{copy.departures.nextBadge}</small> : null}
+                          {status ? <em>{status}</em> : null}
+                          {deadline ? <em>{copy.departures.deadlineLabel} : {deadline}</em> : null}
+                          {note ? <em>{copy.departures.noteLabel} : {note}</em> : null}
+                        </li>
+                      );
+                    })}
+                  </ul>
+
+                  <details className="departure-contact-disclosure">
+                    <summary className="button button--card">
+                      <MessageCircle aria-hidden="true" size={18} />{copy.departures.requestDetails}
+                    </summary>
+                    <WhatsAppContactPicker
+                      contacts={contacts}
+                      heading={copy.departures.chooseContact}
+                      emptyText={copy.departures.noContacts}
+                      messageForLanguage={(contactLanguage) =>
+                        buildDepartureMessage(
+                          messageCountryName(route.route.origin, contactLanguage),
+                          messageCountryName(route.route.destination, contactLanguage),
+                          contactLanguage,
+                        )
+                      }
+                    />
+                  </details>
                 </article>
               );
             })}
@@ -214,7 +385,7 @@ function Departures({ language }: SiteSectionsProps) {
             </div>
             <a
               className="button button--navy"
-              href={createWhatsAppLink(siteConfig.whatsapp.primary, copy.whatsappMessages.contact) ?? "#contacts"}
+              href={createWhatsAppLink(siteConfig.whatsapp.primary, copy.whatsappMessages.contact, language) ?? "#contacts"}
               target="_blank"
               rel="noreferrer"
             >
@@ -222,7 +393,6 @@ function Departures({ language }: SiteSectionsProps) {
             </a>
           </div>
         )}
-        <QuickActions language={language} />
       </div>
     </section>
   );
@@ -355,8 +525,6 @@ function Process({ language }: SiteSectionsProps) {
 
 function QuoteAndServices({ language }: SiteSectionsProps) {
   const copy = translations[language];
-  const quoteLink = createWhatsAppLink(siteConfig.whatsapp.primary, copy.whatsappMessages.quote) ?? "#contacts";
-  const checkLink = createWhatsAppLink(siteConfig.whatsapp.primary, copy.whatsappMessages.parcelCheck) ?? "#contacts";
   const services = siteConfig.services.filter((service) => service.enabled);
 
   return (
@@ -367,7 +535,7 @@ function QuoteAndServices({ language }: SiteSectionsProps) {
           <p className="eyebrow">{copy.quote.eyebrow}</p>
           <h2>{copy.quote.title}</h2>
           <p>{copy.quote.text}</p>
-          <a className="button button--navy" href={quoteLink} target="_blank" rel="noreferrer">
+          <a className="button button--navy" href="#quick-actions-quote">
             <MessageCircle aria-hidden="true" size={18} />{copy.quote.button}
           </a>
         </article>
@@ -388,7 +556,7 @@ function QuoteAndServices({ language }: SiteSectionsProps) {
           ) : (
             <p>{copy.services.emptyText}</p>
           )}
-          <a className="button button--outline" href={checkLink} target="_blank" rel="noreferrer">
+          <a className="button button--outline" href="#quick-actions-item-check">
             <MessageCircle aria-hidden="true" size={18} />{copy.services.emptyButton}
           </a>
         </article>
@@ -431,7 +599,7 @@ function DeliveryPickup({ language }: SiteSectionsProps) {
           <article className="logistics-card logistics-card--tracking">
             <div className="logistics-card__header"><SearchCheck aria-hidden="true" size={22} /><h3>{copy.tracking.title}</h3></div>
             <p>{copy.tracking.text}</p>
-            <a className="button button--navy" href={createWhatsAppLink(siteConfig.whatsapp.primary, copy.whatsappMessages.tracking) ?? "#contacts"} target="_blank" rel="noreferrer">
+            <a className="button button--navy" href="#quick-actions-tracking">
               <MessageCircle aria-hidden="true" size={18} />{copy.tracking.button}
             </a>
           </article>
@@ -515,17 +683,16 @@ function Contacts({ language }: SiteSectionsProps) {
               : contact.city?.trim() || countryLabel;
             const subtitle = !isBowie && contact.city?.trim() ? countryLabel : null;
             const address = contact.address?.trim();
-            const callLink = createTelLink(contact.phones[0] ?? "");
-            const whatsappLink = isBowie
-              ? createWhatsAppLink(siteConfig.whatsapp.primary, copy.whatsappMessages.contact)
-              : null;
+            const contactPeople = getWhatsAppContacts(contact.contactIds);
+            const primaryContact = contactPeople[0];
+            const callLink = createTelLink(primaryContact?.phone ?? "");
             const purpose = (language === "fr" ? contact.purposeFr : contact.purposeEn)?.trim();
             const purposeDescription = (
               language === "fr" ? contact.purposeDescriptionFr : contact.purposeDescriptionEn
             )?.trim();
 
             return (
-              <article className={`contact-card${address ? " contact-card--location" : ""}`} key={contact.id}>
+              <article className={`contact-card${isBowie ? " contact-card--location" : ""}`} key={contact.id}>
                 <div className="contact-card__title"><span aria-hidden="true">{country.flag}</span><div><h3>{title}</h3>{subtitle ? <small>{subtitle}</small> : null}</div></div>
                 {!isBowie && contact.zones?.filter((zone) => zone.trim()).length ? (
                   <div className="contact-block"><span className="contact-block__label"><MapPin aria-hidden="true" size={16} />{copy.contacts.zonesLabel}</span><div className="zone-list">{contact.zones.filter((zone) => zone.trim()).map((zone) => <span key={zone}>{zone}</span>)}</div></div>
@@ -533,12 +700,22 @@ function Contacts({ language }: SiteSectionsProps) {
                 <div className="contact-block">
                   <span className="contact-block__label"><Phone aria-hidden="true" size={16} />{copy.contacts.phonesLabel}</span>
                   <div className="phone-list">
-                    {contact.phones.map((phone) => {
-                      const telLink = createTelLink(phone);
+                    {contactPeople.map((person) => {
+                      const telLink = createTelLink(person.phone);
                       if (!telLink) return null;
+                      const phoneWhatsAppLink = createWhatsAppLink(
+                        person.phone,
+                        translations[person.whatsappLanguage].whatsappMessages.contactLocation(title),
+                        person.whatsappLanguage,
+                      );
                       return (
-                        <div className="phone-row" key={phone}>
-                          <a href={telLink} aria-label={copy.accessibility.callNumber(phone)}>{phone}</a>
+                        <div className="phone-row" key={person.id}>
+                          <a href={telLink} aria-label={copy.accessibility.callNumber(person.phone)}>{person.phone}</a>
+                          {phoneWhatsAppLink ? (
+                            <a className="phone-whatsapp" href={phoneWhatsAppLink} target="_blank" rel="noreferrer" aria-label={copy.accessibility.whatsappNumber(person.phone)}>
+                              <MessageCircle aria-hidden="true" size={15} />WhatsApp
+                            </a>
+                          ) : null}
                         </div>
                       );
                     })}
@@ -553,7 +730,7 @@ function Contacts({ language }: SiteSectionsProps) {
                 ) : null}
                 <div className="contact-actions">
                   {callLink ? (
-                    <a className="contact-action contact-action--call" href={callLink} aria-label={copy.accessibility.callNumber(contact.phones[0])}>
+                    <a className="contact-action contact-action--call" href={callLink} aria-label={copy.accessibility.callNumber(primaryContact?.phone ?? "")}>
                       <Phone aria-hidden="true" size={17} />{copy.contacts.callButton}
                     </a>
                   ) : null}
@@ -562,16 +739,107 @@ function Contacts({ language }: SiteSectionsProps) {
                       <Navigation aria-hidden="true" size={17} />{copy.contacts.directionsButton}
                     </a>
                   ) : null}
-                  {whatsappLink ? (
-                    <a className="contact-action contact-action--whatsapp" href={whatsappLink} target="_blank" rel="noreferrer" aria-label={copy.accessibility.whatsappNumber(siteConfig.whatsapp.primary)}>
-                      <MessageCircle aria-hidden="true" size={17} />{copy.contacts.whatsappButton}
-                    </a>
-                  ) : null}
                 </div>
               </article>
             );
           })}
         </div>
+      </div>
+    </section>
+  );
+}
+
+function Pricing({ language }: SiteSectionsProps) {
+  const copy = translations[language];
+  const pricing = siteConfig.pricing;
+  const items = pricing.items.filter((item) => item.enabled);
+  const additionalFees = pricing.additionalFees.filter((fee) => fee.enabled);
+  const whatsappContacts = getWhatsAppContacts(pricing.whatsappContactIds);
+  const routes = pricing.routeIds
+    .map((routeId) => routeDetails(routeId, language))
+    .filter((route): route is NonNullable<typeof route> => route !== null);
+
+  if (!pricing.enabled || !items.length) return null;
+
+  return (
+    <section className="section pricing-section" id="pricing" aria-labelledby="pricing-title">
+      <div className="container">
+        <SectionHeading
+          id="pricing-title"
+          eyebrow={copy.pricing.eyebrow}
+          title={copy.pricing.title}
+          intro={copy.pricing.intro}
+        />
+
+        <div className="pricing-scope" aria-label={copy.pricing.scopeLabel}>
+          <strong>{copy.pricing.scopeLabel}</strong>
+          <div>
+            {routes.map(({ route, origin, destination, originFlag, destinationFlag }) => (
+              <span key={route.id}>
+                <b aria-hidden="true">{originFlag}</b>{origin}
+                <ArrowRight aria-hidden="true" size={16} />
+                <b aria-hidden="true">{destinationFlag}</b>{destination}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="pricing-grid">
+          {items.map((item) => (
+            <article className="pricing-item" key={item.id}>
+              <span className="pricing-item__icon"><PackageCheck aria-hidden="true" size={20} /></span>
+              <h3>{language === "fr" ? item.labelFr : item.labelEn}</h3>
+              <strong>{language === "fr" ? item.priceFr : item.priceEn}</strong>
+            </article>
+          ))}
+        </div>
+
+        <div className="pricing-information">
+          <article className="pricing-fees">
+            <div className="pricing-information__title"><CreditCard aria-hidden="true" size={21} /><h3>{copy.pricing.additionalFeesTitle}</h3></div>
+            <dl>
+              {additionalFees.map((fee) => (
+                <div key={fee.id}>
+                  <dt>{language === "fr" ? fee.labelFr : fee.labelEn}</dt>
+                  <dd>{language === "fr" ? fee.priceFr : fee.priceEn}</dd>
+                </div>
+              ))}
+            </dl>
+          </article>
+
+          <article className="pricing-exchange">
+            <div className="pricing-information__title"><CircleDollarSign aria-hidden="true" size={21} /><h3>{copy.pricing.exchangeRateTitle}</h3></div>
+            <p>{language === "fr" ? pricing.exchangeRateNoteFr : pricing.exchangeRateNoteEn}</p>
+          </article>
+        </div>
+
+        <aside className="pricing-warning" aria-labelledby="pricing-warning-title">
+          <ShieldCheck aria-hidden="true" size={24} />
+          <div>
+            <h3 id="pricing-warning-title">{copy.pricing.restrictionTitle}</h3>
+            <p>{language === "fr" ? pricing.restrictionFr : pricing.restrictionEn}</p>
+          </div>
+        </aside>
+
+        <p className="pricing-confirmation"><Info aria-hidden="true" size={17} />{copy.pricing.confirmationNote}</p>
+
+        {whatsappContacts.length ? (
+          <div className="pricing-contacts" aria-labelledby="pricing-contacts-title">
+            <div>
+              <p className="eyebrow">WhatsApp</p>
+              <h3 id="pricing-contacts-title">{copy.pricing.contactTitle}</h3>
+              <p>{copy.pricing.contactIntro}</p>
+            </div>
+            <WhatsAppContactPicker
+              contacts={whatsappContacts}
+              heading={copy.quickActions.chooseContact}
+              emptyText={copy.quickActions.noContacts}
+              messageForLanguage={(contactLanguage) =>
+                translations[contactLanguage].whatsappMessages.pricing
+              }
+            />
+          </div>
+        ) : null}
       </div>
     </section>
   );
@@ -603,7 +871,9 @@ export function SiteSections({ language }: SiteSectionsProps) {
   return (
     <>
       <Departures language={language} />
+      <QuickActions language={language} />
       <Contacts language={language} />
+      <Pricing language={language} />
       <MainGalleryImage language={language} />
       <Gallery language={language} />
       <Process language={language} />

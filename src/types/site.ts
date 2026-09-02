@@ -17,6 +17,8 @@ export interface Country {
   id: string;
   nameFr: string;
   nameEn: string;
+  messageNameFr: string;
+  messageNameEn: string;
   shortName: string;
   flag: string;
   enabled: boolean;
@@ -46,7 +48,7 @@ export interface ContactLocation {
   countryId: string;
   city: string | null;
   zones?: string[];
-  phones: string[];
+  contactIds: string[];
   address: string | null;
   purposeFr?: string;
   purposeEn?: string;
@@ -70,6 +72,50 @@ export interface GalleryConfig {
   enabled: boolean;
   mainImage: GalleryImage;
   images: GalleryImage[];
+}
+
+export interface PricingItem {
+  id: string;
+  labelFr: string;
+  labelEn: string;
+  priceFr: string;
+  priceEn: string;
+  enabled: boolean;
+}
+
+export interface PricingAdditionalFee {
+  id: string;
+  labelFr: string;
+  labelEn: string;
+  priceFr: string;
+  priceEn: string;
+  enabled: boolean;
+}
+
+export interface WhatsAppContact {
+  id: string;
+  label: string;
+  phone: string;
+  whatsappLanguage: Language;
+  enabled: boolean;
+}
+
+export interface WhatsAppConfig {
+  primary: string;
+  contacts: WhatsAppContact[];
+  departureContacts: Record<"usa" | "canada" | "cameroon", string[]>;
+}
+
+export interface PricingConfig {
+  enabled: boolean;
+  routeIds: string[];
+  items: PricingItem[];
+  restrictionFr: string;
+  restrictionEn: string;
+  additionalFees: PricingAdditionalFee[];
+  exchangeRateNoteFr: string;
+  exchangeRateNoteEn: string;
+  whatsappContactIds: string[];
 }
 
 export interface ConfigurableService {
@@ -102,9 +148,11 @@ export interface FrequentlyAskedQuestion {
 export interface SiteConfig {
   companyPartners: CompanyPartner[];
   countries: Country[];
-  whatsapp: { primary: string };
+  whatsapp: WhatsAppConfig;
   routes: ShippingRoute[];
+  departureRouteOrder: string[];
   departures: Departure[];
+  pricing: PricingConfig;
   gallery: GalleryConfig;
   announcement: { enabled: boolean; textFr: string; textEn: string };
   contacts: ContactLocation[];

@@ -1,5 +1,12 @@
+import type { Language } from "../types/site";
+
 const MIN_PHONE_DIGITS = 3;
 const MAX_PHONE_DIGITS = 15;
+
+const SITE_SIGNATURES: Record<Language, string> = {
+  en: "_Message sent from the NK Ultra Shipping Express website._",
+  fr: "_Message envoyé depuis le site NK Ultra Shipping Express._",
+};
 
 function hasUsableLength(phone: string): boolean {
   return phone.length >= MIN_PHONE_DIGITS && phone.length <= MAX_PHONE_DIGITS;
@@ -29,11 +36,23 @@ export function createTelLink(phone: string): string | null {
   return normalizedPhone ? `tel:${normalizedPhone}` : null;
 }
 
-export function createWhatsAppLink(phone: string, message?: string): string | null {
+/** Ajoute une signature unique à tous les messages WhatsApp générés par le site. */
+export function appendSiteSignature(message: string, language: Language): string {
+  const cleanMessage = message.trim();
+  return cleanMessage
+    ? `${cleanMessage}\n\n${SITE_SIGNATURES[language]}`
+    : SITE_SIGNATURES[language];
+}
+
+export function createWhatsAppLink(
+  phone: string,
+  message: string,
+  language: Language,
+): string | null {
   const normalizedPhone = normalizePhoneNumber(phone);
 
   if (!hasUsableLength(normalizedPhone)) return null;
 
   const baseUrl = `https://wa.me/${normalizedPhone}`;
-  return message ? `${baseUrl}?text=${encodeURIComponent(message)}` : baseUrl;
+  return `${baseUrl}?text=${encodeURIComponent(appendSiteSignature(message, language))}`;
 }
