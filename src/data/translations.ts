@@ -795,9 +795,6 @@ export const translations = {
       followUs: "Follow us",
       disclaimer: "Departure dates, availability, and shipping arrangements may change. Contact us to confirm the latest information.",
       copyright: (year) => `© ${year} NK Ultra Shipping Express × Express Air Shipping. All rights reserved.`,
-      developerCredit: "Designed & developed by Bruel Junior Takoguem",
-      developerContact: "Contact me",
-      
     },
     accessibility: {
       skipToContent: "Skip to main content",
