@@ -55,7 +55,7 @@ export const siteConfig: SiteConfig = {
   whatsapp: {
     primary: "+1 240 715 8407",
     contacts: [
-      { id: "usa-240", label: "USA", phone: "+1 240 715 8406", whatsappLanguage: "en", enabled: true },
+      { id: "usa-240", label: "USA", phone: "+1 240 715 8407", whatsappLanguage: "en", enabled: true },
       { id: "usa-646", label: "USA", phone: "+1 646 409 1168", whatsappLanguage: "en", enabled: true },
       { id: "canada-2148", label: "Canada", phone: "+1 450 369 2148", whatsappLanguage: "en", enabled: true },
       { id: "canada-2149", label: "Canada", phone: "+1 450 369 2149", whatsappLanguage: "en", enabled: true },

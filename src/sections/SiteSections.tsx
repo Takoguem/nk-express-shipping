@@ -684,8 +684,6 @@ function Contacts({ language }: SiteSectionsProps) {
             const subtitle = !isBowie && contact.city?.trim() ? countryLabel : null;
             const address = contact.address?.trim();
             const contactPeople = getWhatsAppContacts(contact.contactIds);
-            const primaryContact = contactPeople[0];
-            const callLink = createTelLink(primaryContact?.phone ?? "");
             const purpose = (language === "fr" ? contact.purposeFr : contact.purposeEn)?.trim();
             const purposeDescription = (
               language === "fr" ? contact.purposeDescriptionFr : contact.purposeDescriptionEn
@@ -729,11 +727,6 @@ function Contacts({ language }: SiteSectionsProps) {
                   </div>
                 ) : null}
                 <div className="contact-actions">
-                  {callLink ? (
-                    <a className="contact-action contact-action--call" href={callLink} aria-label={copy.accessibility.callNumber(primaryContact?.phone ?? "")}>
-                      <Phone aria-hidden="true" size={17} />{copy.contacts.callButton}
-                    </a>
-                  ) : null}
                   {address && contact.directionsUrl ? (
                     <a className="contact-action" href={contact.directionsUrl} target="_blank" rel="noreferrer">
                       <Navigation aria-hidden="true" size={17} />{copy.contacts.directionsButton}
