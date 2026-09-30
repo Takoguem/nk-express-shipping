@@ -169,11 +169,7 @@ export function LandingPage() {
                 </button>
               ))}
             </div>
-            {whatsappLink ? (
-              <a className="button button--whatsapp header-whatsapp" href={whatsappLink} target="_blank" rel="noreferrer">
-                <MessageCircle aria-hidden="true" size={17} />{copy.common.whatsapp}
-              </a>
-            ) : null}
+
             <button
               className="menu-button"
               type="button"
@@ -197,7 +193,6 @@ export function LandingPage() {
         >
           <div className="container mobile-menu__inner">
             {navigation.map((item) => <a href={item.href} key={item.href} onClick={closeMenu}>{item.label}<ArrowRight aria-hidden="true" size={18} /></a>)}
-            {whatsappLink ? <a className="button button--whatsapp" href={whatsappLink} target="_blank" rel="noreferrer" onClick={closeMenu}><MessageCircle aria-hidden="true" size={18} />{copy.header.whatsapp}</a> : null}
           </div>
         </nav>
       </header>
@@ -217,11 +212,7 @@ export function LandingPage() {
                 ))}
               </div>
               <div className="hero-actions">
-                {whatsappLink ? (
-                  <a className="button button--whatsapp" href={whatsappLink} target="_blank" rel="noreferrer">
-                    <MessageCircle aria-hidden="true" size={19} />{copy.hero.whatsapp}<span aria-hidden="true">↗</span>
-                  </a>
-                ) : null}
+
                 <a className="button button--secondary" href="#departures">
                   {copy.hero.departures}<ArrowDown aria-hidden="true" size={18} />
                 </a>
