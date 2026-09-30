@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowDown,
   ArrowRight,
+  ChevronDown,
   Facebook,
   Instagram,
   Menu,
@@ -15,16 +16,27 @@ import { siteConfig } from "../data/site-config";
 import { translations } from "../data/translations";
 import { useLanguage } from "../hooks/useLanguage";
 import { SiteSections } from "../sections/SiteSections";
-import { createTelLink, createWhatsAppLink } from "../utils";
+import {
+  createTelLink,
+  createWhatsAppLink,
+  getWhatsAppContacts,
+} from "../utils";
 import { BrandLogo } from "./BrandLogo";
+
 
 export function LandingPage() {
   const { language, setLanguage } = useLanguage();
   const copy = translations[language];
   const [menuOpen, setMenuOpen] = useState(false);
   const [announcementDismissed, setAnnouncementDismissed] = useState(false);
+  const [floatingWhatsappOpen, setFloatingWhatsappOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const partners = siteConfig.companyPartners.filter((partner) => partner.enabled);
+  const floatingWhatsappContacts = getWhatsAppContacts(
+  siteConfig.whatsapp.contacts.map((contact) => contact.id),
+);
+  const tiktokLink = siteConfig.socials.tiktok.trim();
+
 
   const announcementText = siteConfig.announcement.enabled
     ? language === "fr"
@@ -279,17 +291,106 @@ export function LandingPage() {
             ) : null}
           </div>
         </div>
-        <div className="container footer-bottom">
-          <p>{copy.footer.disclaimer}</p>
-          <small>{copy.footer.copyright(new Date().getFullYear())}</small>
-        </div>
+           <div className="container footer-bottom">
+           <p>{copy.footer.disclaimer}</p>
+
+<div className="footer-signature">
+  <span>site realisé par <strong>TBJ</strong></span>
+  <a href="mailto:takoguembruel@gmail.com">
+    takoguembruel@gmail.com
+  </a>
+</div>
+
+             <small>{copy.footer.copyright(new Date().getFullYear())}</small>
+         </div>
       </footer>
 
-      {whatsappLink ? (
-        <a className="floating-whatsapp" href={whatsappLink} target="_blank" rel="noreferrer" aria-label={copy.accessibility.floatingWhatsapp}>
-          <MessageCircle aria-hidden="true" size={22} /><span>{copy.common.whatsapp}</span>
-        </a>
+
+           <div className="floating-actions">
+  {tiktokLink ? (
+    <a
+      className="floating-tiktok"
+      href={tiktokLink}
+      target="_blank"
+      rel="noreferrer"
+      aria-label="TikTok"
+    >
+      <Music2 aria-hidden="true" size={21} />
+      <span>TikTok</span>
+    </a>
+  ) : null}
+
+  {floatingWhatsappContacts.length ? (
+    <div className="floating-whatsapp-wrapper">
+      {floatingWhatsappOpen ? (
+        <div className="floating-whatsapp-panel">
+          <div className="floating-whatsapp-panel__header">
+            <strong>WhatsApp</strong>
+            <button
+              type="button"
+              onClick={() => setFloatingWhatsappOpen(false)}
+              aria-label="Fermer"
+            >
+              <X aria-hidden="true" size={18} />
+            </button>
+          </div>
+
+          <p>
+            {language === "fr"
+              ? "Choisissez un contact"
+              : "Choose a contact"}
+          </p>
+
+          <div className="floating-whatsapp-contacts">
+            {floatingWhatsappContacts.map((contact) => {
+              const whatsappLink = createWhatsAppLink(
+                contact.phone,
+                translations[contact.whatsappLanguage].whatsappMessages.contact,
+                contact.whatsappLanguage,
+              );
+
+              if (!whatsappLink) return null;
+
+              return (
+                <a
+                  key={contact.id}
+                  href={whatsappLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="floating-whatsapp-contact"
+                  onClick={() => setFloatingWhatsappOpen(false)}
+                >
+                  <MessageCircle aria-hidden="true" size={17} />
+
+                  <span>
+                    <strong>{contact.label}</strong>
+                    <small>{contact.phone}</small>
+                  </span>
+                </a>
+              );
+            })}
+          </div>
+        </div>
       ) : null}
+
+      <button
+        type="button"
+        className="floating-whatsapp"
+        onClick={() => setFloatingWhatsappOpen((open) => !open)}
+        aria-expanded={floatingWhatsappOpen}
+        aria-label={copy.accessibility.floatingWhatsapp}
+      >
+        <MessageCircle aria-hidden="true" size={22} />
+        <span>{copy.common.whatsapp}</span>
+        <ChevronDown
+          aria-hidden="true"
+          size={17}
+          className={floatingWhatsappOpen ? "is-rotated" : ""}
+        />
+      </button>
+    </div>
+  ) : null}
+</div>
     </div>
   );
 }
