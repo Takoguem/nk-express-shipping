@@ -84,9 +84,9 @@ export const siteConfig: SiteConfig = {
   ],
 departures: [
   {
-    id: "usa-cameroon-2026-10-13",
+    id: "usa-cameroon-2026-10-05",
     routeId: "usa-cameroon",
-    date: "2026-10-13",
+    date: "2026-10-05",
     deadline: null,
     enabled: true,
   },
