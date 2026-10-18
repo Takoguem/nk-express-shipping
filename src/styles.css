@@ -1703,3 +1703,93 @@ input, select, textarea { max-width: 100%; }
     will-change: auto;
   }
 }
+
+/* =========================================
+   AMÉLIORATION VISIBILITÉ ET MOUVEMENT
+   ========================================= */
+
+/* Drapeaux en arrière-plan des sections */
+.partnership-preview::before,
+.usa-delivery-section::before,
+#departures::before,
+#contacts::before,
+#pricing::before,
+#process::before,
+#practical::before,
+#faq::before {
+  opacity: 0.17;
+  filter: blur(1.5px);
+  animation: flag-float-strong 6s ease-in-out infinite;
+}
+
+/* Mouvement plus visible, mais fluide */
+@keyframes flag-float-strong {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(-2deg);
+  }
+
+  50% {
+    transform: translate3d(-18px, -14px, 0) rotate(2deg);
+  }
+}
+
+/* Drapeaux du Hero */
+.hero::after {
+  opacity: 0.20;
+  filter: blur(2px);
+  animation: hero-flags-float-strong 6s ease-in-out infinite;
+}
+
+@keyframes hero-flags-float-strong {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -18px, 0);
+  }
+}
+
+/* Mobile : visibilité améliorée sans masquer le contenu */
+@media (max-width: 640px) {
+  .partnership-preview::before,
+  .usa-delivery-section::before,
+  #departures::before,
+  #contacts::before,
+  #pricing::before,
+  #process::before,
+  #practical::before,
+  #faq::before {
+    opacity: 0.12;
+    filter: blur(1px);
+    animation-duration: 7s;
+  }
+
+  .hero::after {
+    opacity: 0.14;
+    filter: blur(1.5px);
+    animation-duration: 7s;
+  }
+}
+
+/* Très petits écrans */
+@media (max-width: 380px) {
+  .hero::after {
+    opacity: 0.12;
+  }
+}
+
+/* Respecter les préférences d'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .partnership-preview::before,
+  .usa-delivery-section::before,
+  #departures::before,
+  #contacts::before,
+  #pricing::before,
+  #process::before,
+  #practical::before,
+  #faq::before,
+  .hero::after {
+    animation: none;
+  }
+}
