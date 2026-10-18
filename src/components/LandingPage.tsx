@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowDown,
   ArrowRight,
+  CalendarDays,
   ChevronDown,
   Facebook,
   Instagram,
@@ -99,6 +100,15 @@ export function LandingPage() {
     icon.href = faviconPath;
     if (!existingIcon) document.head.append(icon);
   }, []);
+
+  useEffect(() => {
+    if (!floatingWhatsappOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setFloatingWhatsappOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [floatingWhatsappOpen]);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -202,6 +212,10 @@ export function LandingPage() {
           <div className="container hero-grid">
             <div className="hero-copy">
               <p className="eyebrow">{copy.hero.eyebrow}</p>
+              <div className="hero-brandline" aria-label={`${copy.hero.brandLine} ${copy.hero.serviceLine}`}>
+                <strong>{copy.hero.brandLine}</strong>
+                <span>{copy.hero.serviceLine}</span>
+              </div>
               <h1>{copy.hero.title}</h1>
               <p className="hero-subtitle">{copy.hero.subtitle}</p>
               <div className="country-chips" aria-label={copy.hero.destinationsLabel}>
@@ -221,10 +235,20 @@ export function LandingPage() {
 
             <div className="route-visual" role="img" aria-label={copy.accessibility.routeVisual}>
               <div className="route-visual__glow" />
+              <div className="route-flags-floating" aria-hidden="true">
+                <span className="route-flag route-flag--usa">🇺🇸</span>
+                <span className="route-flag route-flag--canada">🇨🇦</span>
+                <span className="route-flag route-flag--cameroon">🇨🇲</span>
+              </div>
               <div className="route-node route-node--usa"><span aria-hidden="true">🇺🇸</span><strong>USA</strong></div>
               <div className="route-node route-node--canada"><span aria-hidden="true">🇨🇦</span><strong>Canada</strong></div>
               <div className="route-node route-node--cameroon"><span aria-hidden="true">🇨🇲</span><strong>{language === "fr" ? "Cameroun" : "Cameroon"}</strong></div>
-              <div className="parcel-card">
+              <div
+                className="parcel-card parcel-card--photo"
+                style={{
+                  backgroundImage: `linear-gradient(105deg, rgba(7, 28, 44, .91), rgba(7, 28, 44, .56)), url("${siteConfig.gallery.mainImage.src}")`,
+                }}
+              >
                 <span className="parcel-card__icon"><Package aria-hidden="true" size={23} /></span>
                 <span><small>{copy.hero.parcelLabel}</small><strong>{copy.hero.parcelSupport}</strong></span>
               </div>
@@ -298,6 +322,16 @@ export function LandingPage() {
 
 
            <div className="floating-actions">
+  <a
+    className="floating-departures"
+    href="#departures"
+    aria-label={copy.hero.departures}
+    onClick={() => setFloatingWhatsappOpen(false)}
+  >
+    <CalendarDays aria-hidden="true" size={20} />
+    <span>{language === "fr" ? "Départs" : "Departures"}</span>
+  </a>
+
   {tiktokLink ? (
     <a
       className="floating-tiktok"
@@ -320,7 +354,7 @@ export function LandingPage() {
             <button
               type="button"
               onClick={() => setFloatingWhatsappOpen(false)}
-              aria-label="Fermer"
+              aria-label={language === "fr" ? "Fermer" : "Close"}
             >
               <X aria-hidden="true" size={18} />
             </button>

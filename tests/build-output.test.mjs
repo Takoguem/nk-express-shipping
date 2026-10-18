@@ -75,8 +75,8 @@ test("le lot frontend conserve le bilingue et WhatsApp", async () => {
   assert.match(javascript, /2,000 FCFA/);
   assert.match(javascript, /white powder/);
   assert.match(javascript, /daily market exchange rate/);
-  assert.match(javascript, /Message sent from the NK Ultra Shipping Express website/);
-  assert.match(javascript, /Message envoyé depuis le site NK Ultra Shipping Express/);
+  assert.match(javascript, /Message sent from the NKUS & EAS website/);
+  assert.match(javascript, /Message envoyé depuis le site NKUS & EAS/);
   assert.match(javascript, /What would you like to do\?/);
   assert.match(javascript, /Que souhaitez-vous faire \?/);
 });
@@ -187,7 +187,7 @@ test("les liens WhatsApp normalisent les numéros et signent chaque message", as
     assert.equal(url.pathname, `/${normalized}`);
     assert.match(
       url.searchParams.get("text"),
-      /\n\n_Message sent from the NK Ultra Shipping Express website\._$/,
+      /\n\n_Message sent from the NKUS & EAS website\._$/,
     );
   }
 
@@ -198,7 +198,7 @@ test("les liens WhatsApp normalisent les numéros et signent chaque message", as
   );
   assert.match(
     new URL(frenchLink).searchParams.get("text"),
-    /\n\n_Message envoyé depuis le site NK Ultra Shipping Express\._$/,
+    /\n\n_Message envoyé depuis le site NKUS & EAS\._$/,
   );
 });
 

@@ -4,8 +4,8 @@ const MIN_PHONE_DIGITS = 3;
 const MAX_PHONE_DIGITS = 15;
 
 const SITE_SIGNATURES: Record<Language, string> = {
-  en: "_Message sent from the NK Ultra Shipping Express website._",
-  fr: "_Message envoyé depuis le site NK Ultra Shipping Express._",
+  en: "_Message sent from the NKUS & EAS website._",
+  fr: "_Message envoyé depuis le site NKUS & EAS._",
 };
 
 function hasUsableLength(phone: string): boolean {

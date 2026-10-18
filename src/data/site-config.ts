@@ -28,6 +28,10 @@ import galleryImage02 from "../assets/gallery/shipping-gallery-02.jpeg";
 import galleryImage03 from "../assets/gallery/shipping-gallery-03.jpeg";
 import galleryImage04 from "../assets/gallery/shipping-gallery-04.jpeg";
 import galleryImage05 from "../assets/gallery/shipping-gallery-05.jpeg";
+import galleryImage06 from "../assets/gallery/shipping-gallery-06.jpeg";
+import galleryImage07 from "../assets/gallery/shipping-gallery-07.jpeg";
+import galleryImage08 from "../assets/gallery/shipping-gallery-08.jpeg";
+import galleryImage09 from "../assets/gallery/shipping-gallery-09.jpeg";
 import galleryMainImage from "../assets/gallery/shipping-main.jpeg";
 import type { SiteConfig } from "../types/site";
 
@@ -84,37 +88,37 @@ export const siteConfig: SiteConfig = {
   ],
 departures: [
   {
-    id: "usa-cameroon-2026-10-05",
+    id: "usa-cameroon-2026-10-20",
     routeId: "usa-cameroon",
-    date: "2026-10-05",
+    date: "2026-10-20",
     deadline: null,
     enabled: true,
   },
   {
-    id: "usa-cameroon-2026-10-03",
+    id: "usa-cameroon-2026-10-22",
     routeId: "usa-cameroon",
-    date: "2026-10-03",
+    date: "2026-10-22",
     deadline: null,
     enabled: true,
   },
   {
-    id: "cameroon-usa-2026-10-03",
+    id: "cameroon-usa-2026-10-19",
     routeId: "cameroon-usa",
-    date: "2026-10-03",
+    date: "2026-10-19",
     deadline: null,
     enabled: true,
   },
   {
-    id: "cameroon-usa-2026-10-05",
+    id: "cameroon-usa-2026-11-03",
     routeId: "cameroon-usa",
-    date: "2026-10-05",
+    date: "2026-11-03",
     deadline: null,
     enabled: true,
   },
   {
-    id: "cameroon-canada-2026-10-05",
+    id: "cameroon-canada-2026-10-25",
     routeId: "cameroon-canada",
-    date: "2026-10-05",
+    date: "2026-10-25",
     deadline: null,
     enabled: true,
   },
@@ -126,9 +130,9 @@ departures: [
     enabled: true,
   },
   {
-    id: "usa-cameroon-2026-10-09",
+    id: "usa-cameroon-2026-10-26",
     routeId: "usa-cameroon",
-    date: "2026-10-09",
+    date: "2026-10-26",
     deadline: null,
     enabled: true,
   },
@@ -140,9 +144,9 @@ departures: [
     enabled: true,
   },
   {
-    id: "cameroon-usa-2026-10-19",
+    id: "cameroon-usa-2026-11-17",
     routeId: "cameroon-usa",
-    date: "2026-10-19",
+    date: "2026-11-17",
     deadline: null,
     enabled: true,
   },
@@ -290,6 +294,42 @@ departures: [
       {
         id: "shipping-gallery-05",
         src: galleryImage05,
+        altFr: "Produits emballés et disposés pour préparer un envoi",
+        altEn: "Packaged goods laid out while preparing a shipment",
+        width: 486,
+        height: 1080,
+        enabled: true,
+      },
+      {
+        id: "shipping-gallery-06",
+        src: galleryImage06,
+        altFr: "Produits emballés et disposés pour préparer un envoi",
+        altEn: "Packaged goods laid out while preparing a shipment",
+        width: 486,
+        height: 1080,
+        enabled: true,
+      },
+      {
+        id: "shipping-gallery-07",
+        src: galleryImage07,
+        altFr: "Produits emballés et disposés pour préparer un envoi",
+        altEn: "Packaged goods laid out while preparing a shipment",
+        width: 486,
+        height: 1080,
+        enabled: true,
+      },
+      {
+        id: "shipping-gallery-08",
+        src: galleryImage08,
+        altFr: "Produits emballés et disposés pour préparer un envoi",
+        altEn: "Packaged goods laid out while preparing a shipment",
+        width: 486,
+        height: 1080,
+        enabled: true,
+      },
+      {
+        id: "shipping-gallery-09",
+        src: galleryImage09,
         altFr: "Produits emballés et disposés pour préparer un envoi",
         altEn: "Packaged goods laid out while preparing a shipment",
         width: 486,

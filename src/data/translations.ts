@@ -40,6 +40,8 @@ interface TranslationDictionary {
   };
   hero: {
     eyebrow: string;
+    brandLine: string;
+    serviceLine: string;
     title: string;
     subtitle: string;
     whatsapp: string;
@@ -300,9 +302,11 @@ export const translations = {
     },
     hero: {
       eyebrow: "Expédition internationale",
-      title: "Vos colis entre le Cameroun, les États-Unis et le Canada.",
+      brandLine: "NK Ultra Shipping Express",
+      serviceLine: "× Transport aérien express",
+      title: "Votre colis, notre priorité.",
       subtitle:
-        "Une solution simple pour vos expéditions internationales, avec des départs réguliers et un accompagnement personnalisé.",
+        "Vos expéditions entre le Cameroun, les États-Unis et le Canada, avec des départs annoncés et un accompagnement à chaque étape.",
       whatsapp: "Contacter sur WhatsApp",
       departures: "Voir les prochains départs",
       quote: "Demander un tarif",
@@ -582,9 +586,11 @@ export const translations = {
     },
     hero: {
       eyebrow: "International shipping",
-      title: "Your parcels between Cameroon, the United States, and Canada.",
+      brandLine: "NK Ultra Shipping Express",
+      serviceLine: "× Express air freight",
+      title: "Your parcel, our priority.",
       subtitle:
-        "A straightforward international shipping service with regular departures and personal support at every step.",
+        "Ship between Cameroon, the United States, and Canada with published departures and support at every step.",
       whatsapp: "Contact us on WhatsApp",
       departures: "View upcoming departures",
       quote: "Request a quote",

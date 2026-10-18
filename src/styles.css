@@ -921,3 +921,553 @@ main > section, .section { scroll-margin-top: 92px; }
     gap: 4px;
   }
 }
+
+/* ---------- Polish visuel et confort d'utilisation ---------- */
+:root {
+  --gold-light: #e3c77f;
+  --surface: #ffffff;
+  --surface-soft: #f9f8f4;
+  --focus-ring: 0 0 0 4px rgba(196, 160, 82, .24);
+}
+
+::selection { background: rgba(196, 160, 82, .28); color: var(--navy); }
+
+.site-header {
+  border-bottom-color: rgba(196, 160, 82, .28);
+  box-shadow: 0 8px 28px rgba(4, 21, 34, .08);
+}
+
+.desktop-nav a {
+  position: relative;
+  padding-block: .6rem;
+  transition: color 160ms ease;
+}
+.desktop-nav a::after {
+  position: absolute;
+  right: 0;
+  bottom: .18rem;
+  left: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--gold);
+  content: "";
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 160ms ease;
+}
+.desktop-nav a:hover::after,
+.desktop-nav a:focus-visible::after { transform: scaleX(1); }
+
+.hero {
+  background:
+    radial-gradient(ellipse at 82% 14%, rgba(196,160,82,.17), transparent 27rem),
+    radial-gradient(ellipse at 12% 95%, rgba(20,89,112,.25), transparent 28rem),
+    linear-gradient(135deg, #061724 0%, #09263c 56%, #0b3046 100%);
+}
+.hero-grid { gap: clamp(2rem, 4vw, 4rem); }
+.hero h1 { max-width: 760px; }
+.hero-subtitle { line-height: 1.75; }
+.route-visual {
+  border-color: rgba(227,199,127,.24);
+  background: linear-gradient(145deg, rgba(255,255,255,.085), rgba(255,255,255,.025));
+  box-shadow: 0 28px 70px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.1);
+}
+.route-node { box-shadow: 0 10px 26px rgba(0,0,0,.12); }
+.parcel-card { box-shadow: 0 18px 40px rgba(0,0,0,.18); }
+
+.button { box-shadow: 0 5px 16px rgba(7,28,44,.06); }
+.button:active { transform: translateY(0) scale(.99); }
+.button--whatsapp { background: linear-gradient(135deg, #0b8b67, #087253); }
+.button--secondary { backdrop-filter: blur(8px); }
+
+.partnership-preview { background: linear-gradient(180deg, #f8f7f2, #fff); }
+.partnership-card {
+  border: 1px solid rgba(7,28,44,.06);
+  border-radius: 28px;
+  background: rgba(255,255,255,.82);
+  padding: clamp(1.25rem, 4vw, 3rem);
+  box-shadow: 0 20px 55px rgba(7,28,44,.055);
+}
+
+.section-heading h2 { letter-spacing: -.04em; }
+.action-card, .route-card, .contact-card, .departure-card, .gallery-card,
+.pricing-item, .practical-card, .process-step, .faq-item, .rules-card,
+.payments-card, .contact-picker__grid > a {
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+.action-card, .route-card, .contact-card, .departure-card, .pricing-item,
+.practical-card, .process-step, .faq-item, .rules-card, .payments-card {
+  box-shadow: 0 8px 28px rgba(7,28,44,.045);
+}
+
+.contact-picker__grid > a,
+.pricing-contact-grid > a,
+.floating-whatsapp-contact {
+  min-height: 54px;
+}
+.contact-picker__grid > a:focus-visible,
+.pricing-contact-grid > a:focus-visible,
+.floating-whatsapp-contact:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+
+input, select, textarea { font: inherit; }
+input, select, textarea { max-width: 100%; }
+@media (max-width: 640px) {
+  input, select, textarea { font-size: 16px; }
+}
+
+.footer-signature { color: rgba(255,255,255,.64); }
+.footer-signature a { color: var(--gold-light); overflow-wrap: anywhere; }
+.footer-signature strong { color: #fff; }
+.footer-bottom { row-gap: 1rem; }
+
+/* Barre de contact adaptée aux pouces sur mobile, sans couvrir le contenu. */
+@media (max-width: 640px) {
+  .site-shell { padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
+  .floating-actions {
+    right: 0;
+    bottom: 0;
+    left: 0;
+    align-items: center;
+    justify-content: flex-end;
+    gap: .6rem;
+    padding: .65rem .8rem calc(.65rem + env(safe-area-inset-bottom));
+    border-top: 1px solid rgba(7,28,44,.08);
+    background: rgba(255,255,255,.94);
+    box-shadow: 0 -10px 28px rgba(7,28,44,.09);
+    backdrop-filter: blur(16px);
+    pointer-events: none;
+  }
+  .floating-actions > *,
+  .floating-whatsapp-wrapper { pointer-events: auto; }
+  .floating-whatsapp-wrapper { flex: 1; max-width: 290px; }
+  .floating-whatsapp {
+    width: 100%;
+    min-height: 50px;
+    padding: .7rem .9rem;
+    box-shadow: 0 8px 20px rgba(7,28,44,.16);
+  }
+  .floating-tiktok {
+    min-width: 50px;
+    min-height: 50px;
+    padding: .7rem .8rem;
+    box-shadow: 0 8px 20px rgba(7,28,44,.14);
+  }
+  .floating-whatsapp-panel {
+    right: 0;
+    bottom: calc(100% + .65rem);
+    width: min(360px, calc(100vw - 1.5rem));
+    max-height: min(70dvh, 520px);
+    overflow-y: auto;
+    box-shadow: 0 18px 48px rgba(7,28,44,.22);
+  }
+  .floating-whatsapp-contacts { max-height: min(52dvh, 380px); }
+  .announcement__inner { gap: .5rem; }
+  .hero-grid { padding-block: 3.4rem 3.8rem; }
+  .hero h1 { font-size: clamp(2.35rem, 11vw, 3.35rem); }
+  .route-visual { min-height: 300px; }
+  .partnership-preview { padding-block: 3rem; }
+  .partnership-card { border-radius: 22px; }
+  .footer-grid { padding-block: 3.25rem 2.25rem; }
+}
+
+@media (max-width: 360px) {
+  .partner-lockup__logos { gap: .2rem; }
+  .brand-fallback--compact { max-width: 78px; font-size: .56rem; }
+  .language-switch button { min-width: 31px; }
+  .floating-whatsapp { gap: .35rem; padding-inline: .65rem; font-size: .84rem; }
+  .floating-tiktok { min-width: 46px; padding-inline: .65rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desktop-nav a::after { transition: none; }
+  .action-card, .route-card, .contact-card, .departure-card, .gallery-card,
+  .pricing-item, .practical-card, .process-step, .faq-item, .rules-card,
+  .payments-card, .contact-picker__grid > a { transition: none; }
+}
+
+
+/* ---------- Améliorations NK Ultra Shipping : identité, drapeaux, départs et galerie ---------- */
+.hero-brandline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .45rem .7rem;
+  margin: .85rem 0 1rem;
+  color: #fff;
+}
+.hero-brandline strong {
+  font-size: clamp(1rem, 2.5vw, 1.35rem);
+  font-weight: 900;
+  letter-spacing: -.025em;
+  line-height: 1.2;
+}
+.hero-brandline span {
+  color: var(--gold-light, #e3c77f);
+  font-size: clamp(.85rem, 2vw, 1.05rem);
+  font-weight: 750;
+  letter-spacing: .015em;
+}
+.hero h1 {
+  max-width: 720px;
+  font-size: clamp(2.7rem, 8vw, 5.4rem);
+  font-weight: 900;
+  letter-spacing: -.055em;
+  line-height: .98;
+  text-wrap: balance;
+}
+.hero-subtitle { max-width: 600px; line-height: 1.75; }
+
+/* Drapeaux décoratifs regroupés dans le visuel d'accueil : pas de répétition sur toutes les sections. */
+.route-flags-floating { position: absolute; z-index: 4; inset: 0; pointer-events: none; }
+.route-flag {
+  position: absolute;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 50%;
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 12px 28px rgba(0,0,0,.22);
+  font-size: 1.65rem;
+  animation: flag-drift 5s ease-in-out infinite;
+}
+.route-flag--usa { top: 43%; left: 9%; }
+.route-flag--canada { top: 39%; right: 9%; animation-delay: -1.6s; }
+.route-flag--cameroon { right: 42%; bottom: 7%; animation-delay: -3.1s; }
+@keyframes flag-drift { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+
+/* La photo existante des colis sert de fond à la carte « accompagné à chaque étape ». */
+.parcel-card--photo {
+  min-height: 100px;
+  background-position: center 58%;
+  background-size: cover;
+  color: #fff;
+}
+.parcel-card--photo small { color: rgba(255,255,255,.76); }
+.parcel-card--photo strong { color: #fff; font-size: .86rem; }
+.parcel-card--photo .parcel-card__icon { background: rgba(255,255,255,.94); }
+
+/* Accès rapide aux départs, particulièrement visible sur mobile. */
+.floating-departures {
+  display: inline-flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  border: 1px solid rgba(196,160,82,.45);
+  border-radius: 999px;
+  background: #fff;
+  padding: .75rem 1rem;
+  color: var(--navy);
+  font-size: .85rem;
+  font-weight: 900;
+  text-decoration: none;
+  box-shadow: 0 14px 34px rgba(7,28,44,.16);
+  white-space: nowrap;
+}
+.floating-departures svg { color: var(--gold-ink); flex: none; }
+.floating-departures:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+/* Présentation plus éditoriale de la galerie déjà présente dans le projet. */
+.gallery-main-section .section-heading,
+.gallery-section .section-heading { max-width: 780px; }
+.gallery-main { position: relative; }
+.gallery-main img { max-height: 720px; object-fit: contain; }
+.gallery-card { background: #fff; border-color: rgba(7,28,44,.09); border-radius: 22px; }
+.gallery-card img { transition: transform 350ms ease; }
+@media (hover: hover) {
+  .gallery-card:hover img { transform: scale(1.025); }
+  .floating-departures:hover { transform: translateY(-2px); border-color: var(--gold); }
+}
+
+@media (max-width: 640px) {
+  .site-shell { padding-bottom: calc(92px + env(safe-area-inset-bottom)); }
+  .floating-actions {
+    right: 0;
+    bottom: 0;
+    left: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: .45rem;
+    padding: .55rem .65rem calc(.55rem + env(safe-area-inset-bottom));
+    border-top: 1px solid rgba(7,28,44,.09);
+    background: rgba(255,255,255,.96);
+    box-shadow: 0 -10px 30px rgba(7,28,44,.1);
+    backdrop-filter: blur(16px);
+  }
+  .floating-departures {
+    min-width: 0;
+    min-height: 48px;
+    flex: 0 0 auto;
+    gap: .35rem;
+    padding: .65rem .7rem;
+    font-size: .78rem;
+    box-shadow: none;
+  }
+  .floating-departures svg { width: 18px; }
+  .floating-whatsapp-wrapper { flex: 1; min-width: 0; max-width: 290px; }
+  .floating-whatsapp { width: 100%; min-height: 48px; padding: .65rem .7rem; font-size: .82rem; box-shadow: none; }
+  .floating-tiktok { min-width: 44px; min-height: 48px; padding: .6rem; box-shadow: none; }
+  .floating-tiktok span { display: none; }
+  .floating-whatsapp-panel { right: 0; bottom: calc(100% + .6rem); width: min(350px, calc(100vw - 1.3rem)); max-height: min(70dvh, 520px); overflow-y: auto; }
+  .route-flag { width: 38px; height: 38px; font-size: 1.25rem; }
+  .route-flag--usa { top: 40%; left: 5%; }
+  .route-flag--canada { top: 35%; right: 5%; }
+  .route-flag--cameroon { right: 40%; bottom: 6%; }
+  .hero-brandline { gap: .35rem .5rem; }
+  .hero-brandline strong { font-size: .98rem; }
+  .hero-brandline span { font-size: .82rem; }
+  .hero h1 { font-size: clamp(2.55rem, 10.8vw, 3.45rem); }
+  .parcel-card--photo { max-width: 200px; }
+}
+@media (max-width: 360px) {
+  .floating-departures { padding-inline: .55rem; }
+  .floating-departures span { max-width: 70px; overflow: hidden; text-overflow: ellipsis; }
+  .floating-whatsapp { gap: .25rem; padding-inline: .5rem; }
+  .floating-whatsapp > span { font-size: .77rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .route-flag, .gallery-card img { animation: none; transition: none; }
+}
+
+/* ===== NK Ultra Shipping : galerie compacte ===== */
+
+/* Carrousel horizontal */
+.gallery-carousel {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 0 14px;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #b8b8b8 transparent;
+}
+
+.gallery-carousel:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+.gallery-track {
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+  width: max-content;
+  min-width: 100%;
+}
+
+.gallery-card {
+  flex: 0 0 clamp(220px, 28vw, 340px);
+  width: clamp(220px, 28vw, 340px);
+  aspect-ratio: 4 / 3;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  scroll-snap-align: start;
+  background: #f2f2f2;
+}
+
+.gallery-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 250ms ease;
+}
+
+@media (hover: hover) {
+  .gallery-card:hover img {
+    transform: scale(1.04);
+  }
+}
+
+
+/* Photo principale : respecter le format original */
+.gallery-main {
+  max-height: none;
+  overflow: visible;
+}
+
+.gallery-main img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+}
+
+/* Tablettes */
+@media (max-width: 900px) {
+  .gallery-track {
+    gap: 12px;
+  }
+
+  .gallery-card {
+    flex-basis: 260px;
+    width: 260px;
+  }
+
+  .gallery-main {
+    max-height: 230px;
+  }
+
+  .gallery-main img {
+    height: 230px;
+  }
+}
+
+/* Téléphones */
+@media (max-width: 600px) {
+  .gallery-track {
+    gap: 10px;
+  }
+
+  .gallery-card {
+    flex-basis: 78vw;
+    width: 78vw;
+    max-width: 320px;
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+  }
+
+  .gallery-main {
+    max-height: 180px;
+    border-radius: 12px;
+  }
+
+  .gallery-main img {
+    height: 180px;
+  }
+
+  .gallery-carousel {
+    padding-bottom: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-carousel {
+    scroll-behavior: auto;
+  }
+
+  .gallery-card img {
+    transition: none;
+  }
+}
+
+/* ===== Photo principale : affichage naturel et harmonieux ===== */
+
+.gallery-main-section .gallery-main {
+  position: relative;
+  width: 70%;
+  max-height: none;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(7, 28, 44, 0.08);
+  border-radius: 22px;
+  background: var(--surface-soft, #f9f8f4);
+  box-shadow: 0 18px 45px rgba(7, 28, 44, 0.09);
+}
+
+.gallery-main-section .gallery-main img {
+  display: block;
+  width: 70%;
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+  object-position: center;
+  border-radius: inherit;
+}
+
+/* Mobile : conserver les proportions et le décor */
+@media (max-width: 640px) {
+  .gallery-main-section .gallery-main {
+    border-radius: 16px;
+  }
+
+  .gallery-main-section .gallery-main img {
+    width: 90%;
+    height: auto;
+    max-height: none;
+  }
+}
+
+.usa-delivery-section {
+  background: var(--surface-soft, #f8f7f3);
+}
+
+.usa-delivery-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: 32px;
+  overflow: hidden;
+  padding: clamp(22px, 4vw, 44px);
+  border: 1px solid rgba(7, 28, 44, 0.1);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 16px 40px rgba(7, 28, 44, 0.08);
+}
+
+.usa-delivery-content h2 {
+  margin: 8px 0 16px;
+  color: var(--navy, #102e4a);
+}
+
+.usa-delivery-highlight {
+  color: var(--gold-dark, #a87924);
+  font-size: clamp(1.2rem, 2.3vw, 1.7rem);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.usa-delivery-benefits {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  margin: 24px 0;
+  list-style: none;
+}
+
+.usa-delivery-benefits li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.6;
+}
+
+.usa-delivery-benefits li span {
+  color: var(--gold-dark, #a87924);
+  font-weight: 800;
+}
+
+.usa-delivery-note {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.usa-delivery-visual img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+}
+
+@media (max-width: 760px) {
+  .usa-delivery-card {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding: 22px;
+    border-radius: 18px;
+  }
+
+  .usa-delivery-visual {
+    order: -1;
+  }
+}
