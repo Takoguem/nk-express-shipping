@@ -1793,3 +1793,93 @@ input, select, textarea { max-width: 100%; }
     animation: none;
   }
 }
+
+/* =========================================
+   CORRECTION MOBILE UNIQUEMENT
+   Drapeaux plus visibles et plus animés
+   ========================================= */
+
+@media (max-width: 640px) {
+
+  /* Drapeaux derrière les différentes sections */
+  .partnership-preview::before,
+  .usa-delivery-section::before,
+  #departures::before,
+  #contacts::before,
+  #pricing::before,
+  #process::before,
+  #practical::before,
+  #faq::before {
+    background-size: auto 52%;
+    background-position: right -10px center;
+    opacity: 0.20;
+    filter: blur(0.8px);
+    animation: mobile-section-flags 5s ease-in-out infinite;
+  }
+
+  /* Drapeaux du grand bandeau d'accueil */
+  .hero::after {
+    background-size:
+      145px auto,
+      130px auto,
+      145px auto;
+
+    background-position:
+      left -8px top 10%,
+      right -8px top 30%,
+      right 5% bottom 4%;
+
+    opacity: 0.22;
+    filter: blur(1px);
+    animation: mobile-hero-flags 5s ease-in-out infinite;
+  }
+
+  /* Mouvement visible dans les sections */
+  @keyframes mobile-section-flags {
+    0%, 100% {
+      transform: translate3d(0, 0, 0) rotate(-2deg);
+    }
+
+    50% {
+      transform: translate3d(-14px, -10px, 0) rotate(2deg);
+    }
+  }
+
+  /* Mouvement visible dans le Hero */
+  @keyframes mobile-hero-flags {
+    0%, 100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-14px);
+    }
+  }
+}
+
+/* Très petits téléphones */
+@media (max-width: 380px) {
+  .hero::after {
+    background-size:
+      120px auto,
+      108px auto,
+      120px auto;
+
+    opacity: 0.20;
+  }
+}
+
+/* Respect de l'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .partnership-preview::before,
+  .usa-delivery-section::before,
+  #departures::before,
+  #contacts::before,
+  #pricing::before,
+  #process::before,
+  #practical::before,
+  #faq::before,
+  .hero::after {
+    animation: none !important;
+  }
+}
