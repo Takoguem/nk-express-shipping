@@ -1471,3 +1471,235 @@ input, select, textarea { max-width: 100%; }
     order: -1;
   }
 }
+
+/* =========================================
+   DRAPEAUX EN ARRIÈRE-PLAN — NK ULTRA SHIPPING
+   Optimisé pour mobile, tablette et ordinateur
+   ========================================= */
+
+/* Sections concernées */
+.partnership-preview,
+.usa-delivery-section,
+#departures,
+#contacts,
+#pricing,
+#process,
+#practical,
+#faq {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Base commune des drapeaux des sections */
+.partnership-preview::before,
+.usa-delivery-section::before,
+#departures::before,
+#contacts::before,
+#pricing::before,
+#process::before,
+#practical::before,
+#faq::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: auto 70%;
+  opacity: 0.10;
+  filter: blur(3px);
+  pointer-events: none;
+  animation: flag-float 10s ease-in-out infinite;
+}
+
+/* Drapeau américain */
+.partnership-preview::before,
+#departures::before,
+#practical::before {
+  background-image: url("/flags/usa.png");
+  background-position: right 8% center;
+}
+
+/* Drapeau canadien */
+#contacts::before,
+#process::before {
+  background-image: url("/flags/canada.png");
+  background-position: right 8% center;
+}
+
+/* Drapeau camerounais */
+.usa-delivery-section::before,
+#pricing::before,
+#faq::before {
+  background-image: url("/flags/cameroon.png");
+  background-position: right 8% center;
+}
+
+/* Animation légère : sans grand déplacement vertical */
+@keyframes flag-float {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(-8px, -6px, 0);
+  }
+}
+
+/* =========================================
+   HERO — TROIS DRAPEAUX FLOTTANTS
+   ========================================= */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background-image:
+    url("/flags/usa.png"),
+    url("/flags/canada.png"),
+    url("/flags/cameroon.png");
+
+  background-repeat: no-repeat, no-repeat, no-repeat;
+
+  background-size:
+    230px auto,
+    210px auto,
+    230px auto;
+
+  background-position:
+    8% 25%,
+    88% 22%,
+    72% 88%;
+
+  opacity: 0.13;
+  filter: blur(3px);
+  animation: hero-flags-float 10s ease-in-out infinite;
+}
+
+.hero-grid {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes hero-flags-float {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -7px, 0);
+  }
+}
+
+/* =========================================
+   TABLETTES
+   ========================================= */
+
+@media (min-width: 641px) and (max-width: 1023px) {
+  .partnership-preview::before,
+  .usa-delivery-section::before,
+  #departures::before,
+  #contacts::before,
+  #pricing::before,
+  #process::before,
+  #practical::before,
+  #faq::before {
+    background-size: auto 55%;
+    opacity: 0.08;
+  }
+
+  .hero::after {
+    background-size:
+      165px auto,
+      150px auto,
+      165px auto;
+
+    background-position:
+      2% 18%,
+      98% 28%,
+      75% 90%;
+
+    opacity: 0.11;
+    filter: blur(2px);
+  }
+}
+
+/* =========================================
+   MOBILES — PRIORITÉ À LA LISIBILITÉ
+   ========================================= */
+
+@media (max-width: 640px) {
+  .partnership-preview::before,
+  .usa-delivery-section::before,
+  #departures::before,
+  #contacts::before,
+  #pricing::before,
+  #process::before,
+  #practical::before,
+  #faq::before {
+    background-size: auto 38%;
+    background-position: right -25px center;
+    opacity: 0.06;
+    filter: blur(2px);
+    animation: none;
+  }
+
+  .hero::after {
+    background-size:
+      105px auto,
+      95px auto,
+      105px auto;
+
+    background-position:
+      left -15px top 12%,
+      right -12px top 32%,
+      right 8% bottom 5%;
+
+    opacity: 0.08;
+    filter: blur(2px);
+    animation: none;
+  }
+}
+
+/* Très petits téléphones */
+@media (max-width: 380px) {
+  .hero::after {
+    background-size:
+      82px auto,
+      75px auto,
+      82px auto;
+
+    background-position:
+      left -18px top 10%,
+      right -15px top 30%,
+      right 3% bottom 4%;
+
+    opacity: 0.06;
+  }
+}
+
+/* Accessibilité : respecter la préférence de mouvement réduit */
+@media (prefers-reduced-motion: reduce) {
+  .partnership-preview::before,
+  .usa-delivery-section::before,
+  #departures::before,
+  #contacts::before,
+  #pricing::before,
+  #process::before,
+  #practical::before,
+  #faq::before,
+  .hero::after {
+    animation: none;
+    will-change: auto;
+  }
+}
